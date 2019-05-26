@@ -59,9 +59,17 @@ let channel = socket.channel("room:tweets", {})
 let messagesContainer = document.querySelector("#messages")
 
 channel.on("new_tweet", payload => {
-  let messageItem = document.createElement("li")
-  messageItem.innerText = `${payload.sentiment}:${payload.text}`
-  messagesContainer.appendChild(messageItem)
+  let tweetContainer = document.createElement("div")
+  let sentiment = document.createElement("p")
+  let text = document.createElement("p")
+
+  sentiment.innerText = `${payload.sentiment} : ${payload.score} <- ${payload.id}`
+  text.innerText = `${payload.text}`
+
+  tweetContainer.appendChild(sentiment)
+  tweetContainer.appendChild(text)
+
+  messagesContainer.prepend(tweetContainer)
 })
 
 channel.join()

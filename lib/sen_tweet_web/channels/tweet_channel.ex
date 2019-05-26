@@ -11,8 +11,10 @@ defmodule SenTweet.TweetChannel do
 
   def broadcast_tweet(tweet) when is_map(tweet) do
     tweet = %{
+      id: tweet["id"],
       text: tweet["text"],
-      sentiment: tweet["sentiment"]
+      sentiment: tweet["sentiment"],
+      score: tweet["score"]
     }
 
     SenTweetWeb.Endpoint.broadcast("room:tweets", "new_tweet", tweet)
