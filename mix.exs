@@ -33,7 +33,7 @@ defmodule SenTweet.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bitfeels, path: "../bitfeels"},
+      {:bitfeels, git: "git@github.com:thekeele/bitfeels.git", tag: "v2.0.0"},
       {:phoenix, "~> 1.4.6"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
