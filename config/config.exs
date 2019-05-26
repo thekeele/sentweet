@@ -7,6 +7,13 @@
 # General application configuration
 use Mix.Config
 
+# Configures bitfeels application
+config :bitfeels, :twitter_stream,
+  track: "bitcoin"
+
+config :bitfeels, :tweet_pipeline,
+  sink: SenTweet.Bitfeels
+
 config :sen_tweet,
   ecto_repos: [SenTweet.Repo]
 
