@@ -2,7 +2,7 @@ defmodule SenTweetWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", SenTweetWeb.RoomChannel
+  channel "room:tweets", SenTweetWeb.TweetChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After

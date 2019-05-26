@@ -9,8 +9,8 @@ defmodule SenTweet.Bitfeels do
     {:ok, opts}
   end
 
-  def handle_info({:tweet, data}, opts) do
-    IO.inspect(data, label: "#{__MODULE__} sunk data")
+  def handle_info({:tweet, {_tweet_id, tweet}}, opts) do
+    SenTweet.TweetChannel.broadcast_tweet(tweet)
 
     {:noreply, opts}
   end
