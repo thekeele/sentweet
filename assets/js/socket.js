@@ -59,17 +59,38 @@ let channel = socket.channel("room:tweets", {})
 let messagesContainer = document.querySelector("#messages")
 
 channel.on("new_tweet", payload => {
-  let tweetContainer = document.createElement("div")
+  console.log("payload", payload)
+
+  let tileContainer = document.createElement("div")
+  tileContainer.className = "tile is-ancestor"
+
+  let tweetTile = document.createElement("div")
+  tweetTile.className = "tile is-parent"
+
+  let tweetNotification = document.createElement("article")
+  if(payload.sentiment == "positive") {
+    tweetNotification.className = "tile is-child notification is-success"
+  } else if (payload.sentiment == "negative") {
+    tweetNotification.className = "tile is-child notification is-danger"
+  } else {
+    tweetNotification.className = "tile is-child notification"
+  }
+
   let sentiment = document.createElement("p")
+  sentiment.className = "title"
+  sentiment.innerText = payload.sentiment
+
   let text = document.createElement("p")
+  text.className = "subtitle"
+  text.innerText = payload.text
 
-  sentiment.innerText = `${payload.sentiment} : ${payload.score} <- ${payload.id}`
-  text.innerText = `${payload.text}`
+  tweetNotification.appendChild(sentiment)
+  tweetNotification.appendChild(text)
 
-  tweetContainer.appendChild(sentiment)
-  tweetContainer.appendChild(text)
+  tweetTile.appendChild(tweetNotification)
+  tileContainer.appendChild(tweetTile)
 
-  messagesContainer.prepend(tweetContainer)
+  messagesContainer.prepend(tileContainer)
 })
 
 channel.join()
