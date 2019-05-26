@@ -1,4 +1,4 @@
-defmodule SenTweet.TweetChannel do
+defmodule SenTweetWeb.TweetChannel do
   use Phoenix.Channel
 
   def join("room:tweets", _message, socket) do

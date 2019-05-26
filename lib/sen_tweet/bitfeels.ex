@@ -10,7 +10,7 @@ defmodule SenTweet.Bitfeels do
   end
 
   def handle_info({:tweet, {_tweet_id, tweet}}, opts) do
-    SenTweet.TweetChannel.broadcast_tweet(tweet)
+    SenTweetWeb.TweetChannel.broadcast_tweet(tweet)
 
     {:noreply, opts}
   end
