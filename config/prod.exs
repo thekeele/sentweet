@@ -10,8 +10,13 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :sen_tweet, SenTweetWeb.Endpoint,
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  url: [host: "localhost"],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  server: true
+
+config :bitfeels, :sentiment,
+  url: "http://senpytweet:5000/score",
+  model: "spacy"
 
 # Do not print debug messages in production
 config :logger, level: :info

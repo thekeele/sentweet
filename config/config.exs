@@ -14,6 +14,10 @@ config :bitfeels, :twitter_stream,
   filter_level: "none",
   sink: SenTweet.Bitfeels
 
+config :bitfeels, :sentiment,
+  url: "http://0.0.0.0:5000/score",
+  model: "spacy"
+
 config :sen_tweet,
   ecto_repos: [SenTweet.Repo]
 
