@@ -12,7 +12,8 @@ use Mix.Config
 config :sen_tweet, SenTweetWeb.Endpoint,
   url: [host: "bitfeels.keele.codes"],
   cache_static_manifest: "priv/static/cache_manifest.json",
-  server: true
+  server: true,
+  check_origin: ["http://192.168.1.219"]
 
 config :bitfeels, :sentiment,
   url: "http://senpytweet:5000/score",
