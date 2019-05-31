@@ -10,10 +10,15 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :sen_tweet, SenTweetWeb.Endpoint,
-  url: [scheme: "https", host: "bitfeels.keele.codes", port: 80],
+  url: [scheme: "https", host: "bitfeels.keele.codes", port: 443],
   cache_static_manifest: "priv/static/cache_manifest.json",
   server: true,
-  check_origin: ["http://localhost:4000", "http://192.168.1.219"]
+  check_origin: [
+    "https://bitfeels.keele.codes",
+    "http://bitfeels.keele.codes",
+    "http://192.168.1.219",
+    "http://localhost:4000"
+  ]
 
 config :bitfeels, :sentiment,
   url: "http://senpytweet:5000/score",
