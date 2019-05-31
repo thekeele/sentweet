@@ -33,7 +33,7 @@ defmodule SenTweet.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bitfeels, git: "git@github.com:thekeele/bitfeels.git", tag: "v2.0.0"},
+      {:bitfeels, github: "thekeele/bitfeels", tag: "v2.0.2"},
       {:phoenix, "~> 1.4.6"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
@@ -43,7 +43,8 @@ defmodule SenTweet.MixProject do
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:distillery, "~> 2.0"}
     ]
   end
 
