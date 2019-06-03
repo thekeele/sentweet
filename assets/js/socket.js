@@ -58,37 +58,70 @@ socket.connect()
 let channel = socket.channel("room:tweets", {})
 let messagesContainer = document.querySelector("#messages")
 
+// add positional formatting function to String types
+String.prototype.posformat = function () {
+  var i = 0, args = arguments;
+  return this.replace(/{}/g, function () {
+    return typeof args[i] != 'undefined' ? args[i++] : '';
+  });
+};
+
+// template string containing {} braces to be filled by
+// the positional formatting function
+let template = `
+<div class="tile is-ancestor">
+  <div class="tile is-parent">
+    <a class="tile is-child notification"
+       style="background-color:{}">
+      <p class="title has-text-dark"> {} score: {} {} </p>
+      <p class="subtitle has-text-dark"> {} </p>
+    </a>
+  </div>
+</div>
+`;
+
+// determine div color by sentiment score
+// linear gradient between Bulma is-danger and is-success
+function score_color(score) {
+  if (score < -0.75) {
+    return "#ff3860"; // very negative is-danger
+  } else if (score < -0.25) {
+    return "#da768a"; // mostly negative
+  } else if (score < 0.25) {
+    return "#b5b5b5"; // neutral is-gray-light
+  } else if (score < 0.75) {
+    return "#6cc38a"; // mostly positive
+  } else {
+    return "#23d160"; //very positive is-success
+  }
+}
+
+function score_emoji(score) {
+  if (score < -0.75) {
+    return "\u{1F92C}"; // very negative f-bomb
+  } else if (score < -0.25) {
+    return "\u{1F928}"; // mostly negative skeptical
+  } else if (score < 0.25) {
+    return "\u{1F610}"; // neutral flat mouth
+  } else if (score < 0.75) {
+    return "\u{1F642}"; // mostly positive smirk
+  } else {
+    return "\u{1F911}"; //very positive money eyes
+  }
+}
+
 channel.on("new_tweet", payload => {
   console.log("payload", payload)
+  console.log(messagesContainer)
 
-  let tileContainer = document.createElement("div")
-  tileContainer.className = "tile is-ancestor"
-
-  let tweetTile = document.createElement("div")
-  tweetTile.className = "tile is-parent"
-
-  let tweetNotification = document.createElement("article")
-  if(payload.sentiment == "positive") {
-    tweetNotification.className = "tile is-child notification is-success"
-  } else if (payload.sentiment == "negative") {
-    tweetNotification.className = "tile is-child notification is-danger"
-  } else {
-    tweetNotification.className = "tile is-child notification"
-  }
-
-  let sentiment = document.createElement("p")
-  sentiment.className = "title"
-  sentiment.innerText = payload.sentiment
-
-  let text = document.createElement("p")
-  text.className = "subtitle"
-  text.innerText = payload.text
-
-  tweetNotification.appendChild(sentiment)
-  tweetNotification.appendChild(text)
-
-  tweetTile.appendChild(tweetNotification)
-  tileContainer.appendChild(tweetTile)
+  let tileContainer = document.createElement('div');
+  tileContainer.innerHTML = template.posformat(
+      score_color(payload.score),
+      payload.sentiment,
+      payload.score.toFixed(2),
+      score_emoji(payload.score),
+      payload.text
+  );
 
   messagesContainer.prepend(tileContainer)
 })
