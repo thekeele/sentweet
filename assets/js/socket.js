@@ -56,11 +56,13 @@ socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("room:tweets", {})
-let messagesContainer = document.querySelector("#messages")
+let messageContainers = document.querySelectorAll("[id*='messages']")
 
 // add positional formatting function to String types
-String.prototype.posformat = function () {
+String.prototype.positional_format = function () {
   var i = 0, args = arguments;
+
+  // replace instances of {} with array elements
   return this.replace(/{}/g, function () {
     return typeof args[i] != 'undefined' ? args[i++] : '';
   });
@@ -68,6 +70,12 @@ String.prototype.posformat = function () {
 
 // template string containing {} braces to be filled by
 // the positional formatting function
+// field order:
+//    1 div color
+//    2 sentiment
+//    3 score
+//    4 emoji
+//    5 tweet
 let template = `
 <div class="tile is-ancestor">
   <div class="tile is-parent">
@@ -80,7 +88,7 @@ let template = `
 </div>
 `;
 
-// determine div color by sentiment score
+// return hex color given sentiment score
 // linear gradient between Bulma is-danger and is-success
 function score_color(score) {
   if (score < -0.75) {
@@ -96,6 +104,7 @@ function score_color(score) {
   }
 }
 
+// return emoji given sentiment score
 function score_emoji(score) {
   if (score < -0.75) {
     return "\u{1F92C}"; // very negative f-bomb
@@ -110,12 +119,13 @@ function score_emoji(score) {
   }
 }
 
+var column = false;
 channel.on("new_tweet", payload => {
+
   console.log("payload", payload)
-  console.log(messagesContainer)
 
   let tileContainer = document.createElement('div');
-  tileContainer.innerHTML = template.posformat(
+  tileContainer.innerHTML = template.positional_format(
       score_color(payload.score),
       payload.sentiment,
       payload.score.toFixed(2),
@@ -123,7 +133,10 @@ channel.on("new_tweet", payload => {
       payload.text
   );
 
-  messagesContainer.prepend(tileContainer)
+  // unary + converts bool to int
+  messageContainers[+column].prepend(tileContainer)
+  column = !column; // alternate
+
 })
 
 channel.join()
