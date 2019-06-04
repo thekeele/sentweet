@@ -56,41 +56,37 @@ socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("room:tweets", {})
-let messagesContainer = document.querySelector("#messages")
+let messagesContainer = document.querySelector("#messages-container")
 
 channel.on("new_tweet", payload => {
   console.log("payload", payload)
 
-  let tileContainer = document.createElement("div")
-  tileContainer.className = "tile is-ancestor"
+  var tweet_message = document.getElementById("tweet-message");
+  var new_tweet = tweet_message.cloneNode(true);
+  new_tweet.style = null;
 
-  let tweetTile = document.createElement("div")
-  tweetTile.className = "tile is-parent"
+  new_tweet.querySelector("#sentiment").innerText = payload.sentiment;
+  new_tweet.querySelector("#score").innerText = payload.score;
 
-  let tweetNotification = document.createElement("article")
-  if(payload.sentiment == "positive") {
-    tweetNotification.className = "tile is-child notification is-success"
-  } else if (payload.sentiment == "negative") {
-    tweetNotification.className = "tile is-child notification is-danger"
-  } else {
-    tweetNotification.className = "tile is-child notification"
-  }
+  new_tweet.querySelector("#profile-image").src = payload.user.profile_image_url;
+  new_tweet.querySelector("#user-name").innerText = payload.user.name;
+  new_tweet.querySelector("#screen-name").innerText = payload.user.screen_name;
 
-  let sentiment = document.createElement("p")
-  sentiment.className = "title"
-  sentiment.innerText = payload.sentiment
+  var current_time = Date.now();
+  var tweet_time = new Date(payload.created_at);
+  var minutes = ((current_time - tweet_time) / 60000).toFixed(2);
+  new_tweet.querySelector("#tweet-time").innerText = minutes;
 
-  let text = document.createElement("p")
-  text.className = "subtitle"
-  text.innerText = payload.text
+  new_tweet.querySelector("#user-tweets").innerText = payload.user.statuses_count;
+  new_tweet.querySelector("#user-followers").innerText = payload.user.followers_count;
 
-  tweetNotification.appendChild(sentiment)
-  tweetNotification.appendChild(text)
+  new_tweet.querySelector("#tweet-text").innerText = payload.text;
 
-  tweetTile.appendChild(tweetNotification)
-  tileContainer.appendChild(tweetTile)
+  new_tweet.querySelector("#reply-count").innerText = payload.reply_count;
+  new_tweet.querySelector("#retweet-count").innerText = payload.retweet_count;
+  new_tweet.querySelector("#like-count").innerText = payload.favorite_count;
 
-  messagesContainer.prepend(tileContainer)
+  messagesContainer.prepend(new_tweet);
 })
 
 channel.join()
