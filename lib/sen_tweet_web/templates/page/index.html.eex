@@ -1,40 +1,47 @@
-<article class="message is-success">
-  <div class="message-header">
-    <p>Very Positive</p>
-    <p>90%</p>
-  </div>
-  <div class="message-body">
-    <article class="media">
-      <figure class="media-left">
-        <p class="image is-64x64">
-          <img src="https://pbs.twimg.com/profile_images/1135719704146788353/9wR4Cwd9_400x400.png">
-        </p>
-      </figure>
-      <div class="media-content">
-        <div class="content">
-            Mark Keele |
-            <small>@thekeele</small> | <small>5m ago</small> |
-            <small>100 tweets</small> | <small>80 followers</small>
-            <h4>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc quis magna risus. Nullam egestas iaculis nulla, ut lacinia ante hendrerit sollicitudin. Praesent semper ipsum lectus, at pellentesque odio facilisis eget.</h4>
+<div id="messages-container">
+  <article id="tweet-message" class="message is-success" style="display: none;">
+    <div class="message-header">
+      <p id="sentiment"></p>
+      <p id="score"></p>
+    </div>
+    <div class="message-body">
+      <article class="media">
+        <figure class="media-left">
+          <p class="image is-64x64">
+            <img id="profile-image">
+          </p>
+        </figure>
+        <div class="media-content">
+          <div class="content">
+              <strong id="user-name"></strong> |
+              @<small id="screen-name"></small> |
+              <small id="tweet-time"></small> minutes ago |
+              <small id="user-tweets"></small> tweets |
+              <small id="user-followers"></small> followers
+              <h4 id="tweet-text"></h4>
+          </div>
+          <nav class="level">
+            <div class="level-item has-text-centered">
+              <div>
+                <span class="icon is-small"><i class="fas fa-reply"></i></span>
+                <small id="reply-count"></small> replies
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <span class="icon is-small"><i class="fas fa-retweet"></i></span>
+                <small id="retweet-count"></small> retweets
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <span class="icon is-small"><i class="fas fa-heart"></i></span>
+                <small id="like-count"></small> likes
+              </div>
+            </div>
+          </nav>
         </div>
-        <nav class="level">
-          <div class="level-item has-text-centered">
-            <div>
-              <span class="icon is-small"><i class="fas fa-reply"></i></span> 2 replies
-            </div>
-          </div>
-          <div class="level-item has-text-centered">
-            <div>
-              <span class="icon is-small"><i class="fas fa-retweet"></i></span> 10 retweets
-            </div>
-          </div>
-          <div class="level-item has-text-centered">
-            <div>
-              <span class="icon is-small"><i class="fas fa-heart"></i></span> 20 likes
-            </div>
-          </div>
-        </nav>
-      </div>
-    </article>
-  </div>
-</article>
+      </article>
+    </div>
+  </article>
+</div>
