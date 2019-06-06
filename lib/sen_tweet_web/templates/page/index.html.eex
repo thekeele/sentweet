@@ -1,8 +1,11 @@
 <div id="messages-container">
-  <article id="tweet-message" class="message is-success" style="display: none;">
-    <div class="message-header">
+
+  <!-- Tweet template -->
+  <article id="tweet-message" class="message" style="display: none;">
+    <div id="header" class="message-header">
       <p id="sentiment"></p>
-      <p id="score"></p>
+      <!--<p id="score"></p>-->
+      <p id="emoji"></p>
     </div>
     <div class="message-body">
       <article class="media">
@@ -44,4 +47,10 @@
       </article>
     </div>
   </article>
+
+  <!-- output columns -->
+  <div class="columns">
+    <div class="column" id="message_column_center"></div>
+  </div>
+
 </div>

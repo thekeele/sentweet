@@ -56,8 +56,54 @@ socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("room:tweets", {})
-let messagesContainer = document.querySelector("#messages-container")
 
+// multi-column support
+let messageContainers = document.querySelectorAll("[id*='message_column']")
+let n_columns = messageContainers.length;
+
+// color tweet depending on score with five classes
+function score_color(score) {
+  if (score < -0.75) {
+    return "#ff3860"; // very negative is-danger
+  } else if (score < -0.25) {
+    return "#da768a"; // mostly negative
+  } else if (score < 0.25) {
+    return "#b5b5b5"; // neutral is-gray-light
+  } else if (score < 0.75) {
+    return "#6cc38a"; // mostly positive
+  } else {
+    return "#23d160"; //very positive is-success
+  }
+}
+
+// return emoji depending on score
+function score_emoji(score) {
+  if (score < -0.75) {
+    return "&#x1F92C;"; // very negative f-bomb
+  } else if (score < -0.25) {
+    return "&#x1F928;"; // mostly negative skeptical
+  } else if (score < 0.25) {
+    return "&#x1F610;"; // neutral flat mouth
+  } else if (score < 0.75) {
+    return "&#x1F642;"; // mostly positive smirk
+  } else {
+    return "&#x1F911;"; //very positive money eyes
+  }
+}
+
+// pretty print for tweet score
+function format_sentiment(score) {
+  if (score < 0) {
+    var label = 'negative';
+    score *= -1;
+  } else {
+    var label = 'positive'
+  }
+
+  return (score * 100).toFixed(0) + '% ' + label
+}
+
+var column = 0; // where we put the tweets
 channel.on("new_tweet", payload => {
   console.log("payload", payload)
 
@@ -65,8 +111,10 @@ channel.on("new_tweet", payload => {
   var new_tweet = tweet_message.cloneNode(true);
   new_tweet.style = null;
 
-  new_tweet.querySelector("#sentiment").innerText = payload.sentiment;
-  new_tweet.querySelector("#score").innerText = payload.score;
+  new_tweet.querySelector("#header").style.backgroundColor = score_color(payload.score);
+  new_tweet.querySelector("#sentiment").innerText = format_sentiment(payload.score);
+  //new_tweet.querySelector("#score").innerText = format_sentiment(payload.score);
+  new_tweet.querySelector("#emoji").innerHTML = score_emoji(payload.score);
 
   new_tweet.querySelector("#profile-image").src = payload.user.profile_image_url;
   new_tweet.querySelector("#user-name").innerText = payload.user.name;
@@ -85,8 +133,10 @@ channel.on("new_tweet", payload => {
   new_tweet.querySelector("#reply-count").innerText = payload.reply_count;
   new_tweet.querySelector("#retweet-count").innerText = payload.retweet_count;
   new_tweet.querySelector("#like-count").innerText = payload.favorite_count;
+  console.log(new_tweet);
 
-  messagesContainer.prepend(new_tweet);
+  messageContainers[column].prepend(new_tweet);
+  column = (column + 1) % n_columns; // next column
 })
 
 channel.join()
