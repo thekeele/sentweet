@@ -3,9 +3,10 @@
   <!-- Tweet template -->
   <article id="tweet-message" class="message" style="display: none;">
     <div id="header" class="message-header">
-      <p id="sentiment"></p>
-      <!--<p id="score"></p>-->
-      <p id="emoji"></p>
+      <p>
+        <strong id="score"></strong> <strong id="sentiment"></strong>
+      </p>
+      <span id="emoji" style="font-size: 25px;"></span>
     </div>
     <div class="message-body">
       <article class="media">
