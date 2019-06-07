@@ -61,79 +61,36 @@ let channel = socket.channel("room:tweets", {})
 let messageContainers = document.querySelectorAll("[id*='message_column']")
 let n_columns = messageContainers.length;
 
-// color tweet depending on score with five classes
-function score_color(score) {
-  if (score < -0.75) {
-    return "#ff3860"; // very negative is-danger
-  } else if (score < -0.25) {
-    return "#da768a"; // mostly negative
-  } else if (score < 0.25) {
-    return "#b5b5b5"; // neutral is-gray-light
-  } else if (score < 0.75) {
-    return "#6cc38a"; // mostly positive
-  } else {
-    return "#23d160"; //very positive is-success
-  }
-}
-
-// return emoji depending on score
-function score_emoji(score) {
-  if (score < -0.75) {
-    return "&#x1F92C;"; // very negative f-bomb
-  } else if (score < -0.25) {
-    return "&#x1F928;"; // mostly negative skeptical
-  } else if (score < 0.25) {
-    return "&#x1F610;"; // neutral flat mouth
-  } else if (score < 0.75) {
-    return "&#x1F642;"; // mostly positive smirk
-  } else {
-    return "&#x1F911;"; //very positive money eyes
-  }
-}
-
-// pretty print for tweet score
-function format_sentiment(score) {
-  if (score < 0) {
-    var label = 'negative';
-    score *= -1;
-  } else {
-    var label = 'positive'
-  }
-
-  return (score * 100).toFixed(0) + '% ' + label
-}
-
 var column = 0; // where we put the tweets
-channel.on("new_tweet", payload => {
-  console.log("payload", payload)
+channel.on("new_tweet", sentweet => {
+  console.log("sentweet", sentweet)
 
   var tweet_message = document.getElementById("tweet-message");
   var new_tweet = tweet_message.cloneNode(true);
   new_tweet.style = null;
 
-  new_tweet.querySelector("#header").style.backgroundColor = score_color(payload.score);
-  new_tweet.querySelector("#sentiment").innerText = format_sentiment(payload.score);
-  //new_tweet.querySelector("#score").innerText = format_sentiment(payload.score);
-  new_tweet.querySelector("#emoji").innerHTML = score_emoji(payload.score);
+  new_tweet.querySelector("#header").style.backgroundColor = sentweet.score_style.color;
+  new_tweet.querySelector("#score").innerText = sentweet.score;
+  new_tweet.querySelector("#sentiment").innerText = sentweet.sentiment;
+  new_tweet.querySelector("#emoji").innerHTML = sentweet.score_style.emoji;
 
-  new_tweet.querySelector("#profile-image").src = payload.user.profile_image_url;
-  new_tweet.querySelector("#user-name").innerText = payload.user.name;
-  new_tweet.querySelector("#screen-name").innerText = payload.user.screen_name;
+  new_tweet.querySelector("#profile-image").src = sentweet.user.profile_image_url;
+  new_tweet.querySelector("#user-name").innerText = sentweet.user.name;
+  new_tweet.querySelector("#screen-name").innerText = sentweet.user.screen_name;
 
   var current_time = Date.now();
-  var tweet_time = new Date(payload.created_at);
+  var tweet_time = new Date(sentweet.created_at);
   var minutes = ((current_time - tweet_time) / 60000).toFixed(2);
   new_tweet.querySelector("#tweet-time").innerText = minutes;
 
-  new_tweet.querySelector("#user-tweets").innerText = payload.user.statuses_count;
-  new_tweet.querySelector("#user-followers").innerText = payload.user.followers_count;
+  new_tweet.querySelector("#user-tweets").innerText = sentweet.user.statuses_count;
+  new_tweet.querySelector("#user-followers").innerText = sentweet.user.followers_count;
 
-  new_tweet.querySelector("#tweet-text").innerText = payload.text;
+  new_tweet.querySelector("#tweet-text").innerText = sentweet.text;
 
-  new_tweet.querySelector("#reply-count").innerText = payload.reply_count;
-  new_tweet.querySelector("#retweet-count").innerText = payload.retweet_count;
-  new_tweet.querySelector("#like-count").innerText = payload.favorite_count;
-  console.log(new_tweet);
+  new_tweet.querySelector("#reply-count").innerText = sentweet.reply_count;
+  new_tweet.querySelector("#retweet-count").innerText = sentweet.retweet_count;
+  new_tweet.querySelector("#like-count").innerText = sentweet.favorite_count;
 
   messageContainers[column].prepend(new_tweet);
   column = (column + 1) % n_columns; // next column
