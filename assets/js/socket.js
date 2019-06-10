@@ -86,6 +86,8 @@ channel.on("new_tweet", sentweet => {
   new_tweet.querySelector("#user-tweets").innerText = sentweet.user.statuses_count;
   new_tweet.querySelector("#user-followers").innerText = sentweet.user.followers_count;
 
+  var tweet_source = "https://twitter.com/" + sentweet.user.screen_name + "/status/" + sentweet.id;
+  new_tweet.querySelector("#tweet-source").href = tweet_source;
   new_tweet.querySelector("#tweet-text").innerText = sentweet.text;
 
   new_tweet.querySelector("#reply-count").innerText = sentweet.reply_count;

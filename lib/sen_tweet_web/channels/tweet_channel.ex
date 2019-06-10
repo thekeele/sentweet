@@ -12,6 +12,7 @@ defmodule SenTweetWeb.TweetChannel do
   def broadcast_tweet(tweet) when is_map(tweet) do
     sentweet =
       tweet
+      |> Map.put("id", "#{tweet["id"]}")
       |> Map.put("sentiment", tweet["sentiment"] || "")
       |> Map.put("score", format_score(tweet["score"]))
       |> Map.put("score_style", score_style(tweet["score"]))
