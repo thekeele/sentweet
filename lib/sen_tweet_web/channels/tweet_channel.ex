@@ -20,7 +20,7 @@ defmodule SenTweetWeb.TweetChannel do
   end
 
   defp format_score(nil), do: ""
-  defp format_score(score), do: "#{:math.floor(score * 100)}%"
+  defp format_score(score), do: "#{round(score * 100)}%"
 
   defp score_style(nil),
     do: %{"color" => "", "emoji" => ""}
