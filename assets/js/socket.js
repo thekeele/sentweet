@@ -56,41 +56,44 @@ socket.connect()
 
 // Now that you are connected, you can join channels with a topic:
 let channel = socket.channel("room:tweets", {})
-let messagesContainer = document.querySelector("#messages")
 
-channel.on("new_tweet", payload => {
-  console.log("payload", payload)
+// multi-column support
+let messageContainers = document.querySelectorAll("[id*='message_column']")
+let n_columns = messageContainers.length;
 
-  let tileContainer = document.createElement("div")
-  tileContainer.className = "tile is-ancestor"
+var column = 0; // where we put the tweets
+channel.on("new_tweet", sentweet => {
+  console.log("sentweet", sentweet)
 
-  let tweetTile = document.createElement("div")
-  tweetTile.className = "tile is-parent"
+  var tweet_message = document.getElementById("tweet-message");
+  var new_tweet = tweet_message.cloneNode(true);
+  new_tweet.style = null;
 
-  let tweetNotification = document.createElement("article")
-  if(payload.sentiment == "positive") {
-    tweetNotification.className = "tile is-child notification is-success"
-  } else if (payload.sentiment == "negative") {
-    tweetNotification.className = "tile is-child notification is-danger"
-  } else {
-    tweetNotification.className = "tile is-child notification"
-  }
+  new_tweet.querySelector("#header").style.backgroundColor = sentweet.score_style.color;
+  new_tweet.querySelector("#score").innerText = sentweet.score;
+  new_tweet.querySelector("#sentiment").innerText = sentweet.sentiment;
+  new_tweet.querySelector("#emoji").innerHTML = sentweet.score_style.emoji;
 
-  let sentiment = document.createElement("p")
-  sentiment.className = "title"
-  sentiment.innerText = payload.sentiment
+  new_tweet.querySelector("#profile-image").src = sentweet.user.profile_image_url;
+  new_tweet.querySelector("#user-name").innerText = sentweet.user.name;
+  new_tweet.querySelector("#screen-name").innerText = sentweet.user.screen_name;
 
-  let text = document.createElement("p")
-  text.className = "subtitle"
-  text.innerText = payload.text
+  var current_time = Date.now();
+  var tweet_time = new Date(sentweet.created_at);
+  var minutes = ((current_time - tweet_time) / 60000).toFixed(2);
+  new_tweet.querySelector("#tweet-time").innerText = minutes;
 
-  tweetNotification.appendChild(sentiment)
-  tweetNotification.appendChild(text)
+  new_tweet.querySelector("#user-tweets").innerText = sentweet.user.statuses_count;
+  new_tweet.querySelector("#user-followers").innerText = sentweet.user.followers_count;
 
-  tweetTile.appendChild(tweetNotification)
-  tileContainer.appendChild(tweetTile)
+  new_tweet.querySelector("#tweet-text").innerText = sentweet.text;
 
-  messagesContainer.prepend(tileContainer)
+  new_tweet.querySelector("#reply-count").innerText = sentweet.reply_count;
+  new_tweet.querySelector("#retweet-count").innerText = sentweet.retweet_count;
+  new_tweet.querySelector("#like-count").innerText = sentweet.favorite_count;
+
+  messageContainers[column].prepend(new_tweet);
+  column = (column + 1) % n_columns; // next column
 })
 
 channel.join()
