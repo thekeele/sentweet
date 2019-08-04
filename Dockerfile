@@ -1,4 +1,4 @@
-FROM elixir:1.8 as build
+FROM elixir:1.9 as build
 
 RUN mix local.rebar --force && \
     mix local.hex --force
@@ -9,7 +9,7 @@ COPY mix.* /app/
 RUN mix deps.get --only prod
 RUN mix deps.compile
 
-FROM node:10.14 as frontend
+FROM node:10.16 as frontend
 
 WORKDIR /app
 COPY assets/package.json assets/package-lock.json /app/
