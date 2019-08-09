@@ -25,7 +25,7 @@ FROM build as release
 COPY --from=frontend /priv/static /app/priv/static
 COPY . /app/
 RUN mix phx.digest
-RUN mix release --env=prod --no-tar
+RUN mix distillery.release --env=prod --no-tar
 
 ARG TWITTER_CONSUMER_KEY
 ARG TWITTER_ACCESS_TOKEN
