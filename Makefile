@@ -28,6 +28,7 @@ run:
 	docker run \
 	--network bitfeels \
 	--name sentweet \
+	--restart on-failure:3 \
 	--publish 127.0.0.1:4000:4000/tcp \
 	sentweet:latest
 
