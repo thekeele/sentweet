@@ -9,9 +9,6 @@ use Mix.Config
 
 # Configures bitfeels application
 config :bitfeels, :twitter_stream,
-  track: "bitcoin",
-  language: "en",
-  filter_level: "none",
   sink: SenTweet.Bitfeels
 
 config :bitfeels, :sentiment,
