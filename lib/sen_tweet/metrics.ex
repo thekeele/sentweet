@@ -34,12 +34,17 @@ defmodule SenTweet.Metrics do
   end
 
   defp compute_metrics() do
-    scores = lookup_scores()
-    num_scores = length(scores)
-    sum_scores = Enum.sum(scores)
-    average_score = (sum_scores / num_scores) * 100
+    case lookup_scores() do
+      [] ->
+        %{num_scores: 0, average_score: 0}
 
-    %{num_scores: num_scores, average_score: average_score}
+      scores ->
+        num_scores = length(scores)
+        sum_scores = Enum.sum(scores)
+        average_score = (sum_scores / num_scores) * 100
+
+        %{num_scores: num_scores, average_score: average_score}
+    end
   end
 
   defp lookup_scores(key \\ "bitfeels_pipeline_sentiment") do
