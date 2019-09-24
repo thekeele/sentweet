@@ -54,16 +54,16 @@ let socket = new Socket("/socket", {params: {token: window.userToken}})
 // Finally, connect to the socket:
 socket.connect()
 
-// Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("room:tweets", {})
+//
+// use socket to join tweet channel and process new tweets when they come in
+//
+let tweetChannel = socket.channel("room:tweets", {})
 
-// multi-column support
-let messageContainers = document.querySelectorAll("[id*='message_column']")
-let n_columns = messageContainers.length;
-
-var column = 0; // where we put the tweets
-channel.on("new_tweet", sentweet => {
-  console.log("sentweet", sentweet)
+const tweetsContainerMax = 10;
+let tweetsContainerLength = 0;
+let tweetsContainer = document.querySelector("#tweets");
+tweetChannel.on("new_tweet", sentweet => {
+  console.log("sentweet", sentweet);
 
   var tweet_message = document.getElementById("tweet-message");
   var new_tweet = tweet_message.cloneNode(true);
@@ -94,12 +94,36 @@ channel.on("new_tweet", sentweet => {
   new_tweet.querySelector("#retweet-count").innerText = sentweet.retweet_count;
   new_tweet.querySelector("#like-count").innerText = sentweet.favorite_count;
 
-  messageContainers[column].prepend(new_tweet);
-  column = (column + 1) % n_columns; // next column
+  tweetsContainerLength = tweetsContainer.children.length;
+  if (tweetsContainerLength >= tweetsContainerMax) {
+    let firstChild = tweetsContainer.children[tweetsContainerLength - 1];
+    tweetsContainer.removeChild(firstChild);
+    tweetsContainer.prepend(new_tweet);
+  } else {
+    tweetsContainer.prepend(new_tweet);
+  }
 })
 
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+tweetChannel.join()
+  .receive("ok", resp => { console.log("Joined tweetChannel", resp) })
+  .receive("error", resp => { console.log("Unable to join tweetChannel", resp) })
+
+//
+// use socket to join metric channel and update metrics
+//
+let metricChannel = socket.channel("room:metrics", {})
+document.getElementById("tweets-processed").innerText = 0;
+document.getElementById("average-score").innerText = "0 %";
+
+metricChannel.on("update_metrics", metrics => {
+  console.log("metrics", metrics);
+
+  document.getElementById("tweets-processed").innerText = metrics.num_scores;
+  document.getElementById("average-score").innerText = metrics.average_score.toFixed(2) + " %";
+});
+
+metricChannel.join()
+  .receive("ok", resp => { console.log("Joined metricChannel", resp) })
+  .receive("error", resp => { console.log("Unable to join metricChannel", resp) })
 
 export default socket
