@@ -3,53 +3,52 @@ defmodule SenTweet.Metrics do
 
   alias SenTweetWeb.MetricChannel
 
-  @tab :bitfeels_events
-  @metric_pull_interval 1000 * 30 # millisecond to seconds (30 seconds)
-
   def start_link(_opts) do
-    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    # add metrics here with an initial value
+    metrics = %{
+      tweets_processed: 0,
+      sum_scores: 0,
+      average_score: 0
+    }
+
+    GenServer.start_link(__MODULE__, metrics, name: __MODULE__)
   end
 
   @impl true
-  def init(state) do
-    schedule_work(0)
-
-    {:ok, state}
+  def init(metrics) do
+    {:ok, metrics}
   end
 
   @impl true
-  def handle_info(:compute_metrics, state) do
+  def handle_info({:bitfeels_event, data}, metrics) do
+    # here we receive event data from bitfeels
+    # we then process the data and update the metrics
+    metrics = handle_event(data, metrics)
 
-    metrics = compute_metrics()
-
+    # broadcast our updated metrics to a channel in order to update the UI
     MetricChannel.broadcast_metrics(metrics)
 
-    schedule_work()
-
-    {:noreply, state}
+    {:noreply, metrics}
   end
 
-  defp schedule_work(interval \\ @metric_pull_interval) do
-    Process.send_after(self(), :compute_metrics, interval)
+  defp handle_event({"bitfeels_pipeline_source", _id, _time}, metrics) do
+    # this metrics is when a tweet first enters bitfeels
+    # we could compute the time it takes for us to process a tweet
+    # i.e. through bitfeels pipeline to senpytweet and back
+    metrics
   end
 
-  defp compute_metrics() do
-    case lookup_scores() do
-      [] ->
-        %{num_scores: 0, average_score: 0}
+  defp handle_event({"bitfeels_pipeline_sentiment", id, score, time}, metrics) do
+    # the metrics map contains the current metrics in the state of this process
+    # now we can update the current metrics with the new event data
+    tweets_processed = metrics.tweets_processed + 1
+    sum_scores = metrics.sum_scores + score
+    average_score = (sum_scores / tweets_processed) * 100
 
-      scores ->
-        num_scores = length(scores)
-        sum_scores = Enum.sum(scores)
-        average_score = (sum_scores / num_scores) * 100
-
-        %{num_scores: num_scores, average_score: average_score}
-    end
-  end
-
-  defp lookup_scores(key \\ "bitfeels_pipeline_sentiment") do
-    @tab
-    |> :ets.lookup(key)
-    |> Enum.map(fn {_key, _id, score, _time} -> score end)
+    # put the updated metrics into the metrics map
+    metrics
+    |> Map.put(:tweets_processed, tweets_processed)
+    |> Map.put(:sum_scores, sum_scores)
+    |> Map.put(:average_score, average_score)
   end
 end
