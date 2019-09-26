@@ -112,13 +112,11 @@ tweetChannel.join()
 // use socket to join metric channel and update metrics
 //
 let metricChannel = socket.channel("room:metrics", {})
-document.getElementById("tweets-processed").innerText = 0;
-document.getElementById("average-score").innerText = "0 %";
 
 metricChannel.on("update_metrics", metrics => {
   console.log("metrics", metrics);
 
-  document.getElementById("tweets-processed").innerText = metrics.num_scores;
+  document.getElementById("tweets-processed").innerText = metrics.tweets_processed;
   document.getElementById("average-score").innerText = metrics.average_score.toFixed(2) + " %";
 });
 
