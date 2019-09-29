@@ -43,16 +43,20 @@ defmodule SenTweet.Metrics do
   defp handle_event({"bitfeels_pipeline_sentiment", id, score, time}, metrics) do
     # the metrics map contains the current metrics in the state of this process
     # now we can update the current metrics with the new event data
-    tweets_processed = metrics.tweets_processed + 1
-    sum_scores = metrics.sum_scores + score
-    average_score = (sum_scores / tweets_processed) * 100
-    histogram = update_histogram(score, metrics.histogram)
-    # put the updated metrics into the metrics map
-    metrics
-    |> Map.put(:tweets_processed, tweets_processed)
-    |> Map.put(:sum_scores, sum_scores)
-    |> Map.put(:average_score, average_score)
-    |> Map.put(:histogram, histogram)
+    if is_nil(score) do
+      metrics
+    else
+      tweets_processed = metrics.tweets_processed + 1
+      sum_scores = metrics.sum_scores + score
+      average_score = (sum_scores / tweets_processed) * 100
+      histogram = update_histogram(score, metrics.histogram)
+      # put the updated metrics into the metrics map
+      metrics
+      |> Map.put(:tweets_processed, tweets_processed)
+      |> Map.put(:sum_scores, sum_scores)
+      |> Map.put(:average_score, average_score)
+      |> Map.put(:histogram, histogram)
+    end
   end
 
   defp update_histogram(score, histogram) do
