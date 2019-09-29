@@ -8,7 +8,9 @@ defmodule SenTweet.Metrics do
     metrics = %{
       tweets_processed: 0,
       sum_scores: 0,
-      average_score: 0
+      average_score: 0,
+      histogram: Enum.map(0..10, fn(x) -> [-100 + 200*x/11, -100 + 200*(x+1)/11, 0] end)
+                  # 11 bins -- {start, end, count}
     }
 
     GenServer.start_link(__MODULE__, metrics, name: __MODULE__)
@@ -44,11 +46,18 @@ defmodule SenTweet.Metrics do
     tweets_processed = metrics.tweets_processed + 1
     sum_scores = metrics.sum_scores + score
     average_score = (sum_scores / tweets_processed) * 100
-
+    histogram = update_histogram(score, metrics.histogram)
     # put the updated metrics into the metrics map
     metrics
     |> Map.put(:tweets_processed, tweets_processed)
     |> Map.put(:sum_scores, sum_scores)
     |> Map.put(:average_score, average_score)
+    |> Map.put(:histogram, histogram)
+  end
+
+  defp update_histogram(score, histogram) do
+    histogram
+    |> Enum.map(fn [left, right, count] -> [left, right,
+        (if ((score >= left) and (score < right)), do: (count+1), else: count)] end)
   end
 end
