@@ -9,7 +9,7 @@ defmodule SenTweet.Metrics do
       tweets_processed: 0,
       sum_scores: 0,
       average_score: 0,
-      histogram: Enum.map(0..10, fn(x) -> [-100 + 200*x/11, -100 + 200*(x+1)/11, 0] end)
+      histogram: Enum.map(0..10, fn(x) -> [-1 + 2*x/11, -1 + 2*(x+1)/11, 0] end)
                   # 11 bins -- {start, end, count}
     }
 
