@@ -13,6 +13,10 @@
   </div>
 </nav>
 
+<div id="sentiment-histogram" class="has-text-centered">
+  <svg></svg>
+</div>
+
 <div id="messages-container">
   <!-- Tweet template -->
   <article id="tweet-message" class="message" style="display: none;">

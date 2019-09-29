@@ -7,6 +7,7 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
+import { histogram } from "./charts"
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -118,6 +119,7 @@ metricChannel.on("update_metrics", metrics => {
 
   document.getElementById("tweets-processed").innerText = metrics.tweets_processed;
   document.getElementById("average-score").innerText = metrics.average_score.toFixed(2) + " %";
+  histogram(metrics.histogram);
 });
 
 metricChannel.join()
