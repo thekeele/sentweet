@@ -40,7 +40,7 @@ defmodule SenTweet.Metrics do
     metrics
   end
 
-  defp handle_event({"bitfeels_pipeline_sentiment", id, score, time}, metrics) when is_float(score) do
+  defp handle_event({"bitfeels_pipeline_sentiment", _id, score, _time}, metrics) when is_float(score) do
     # the metrics map contains the current metrics in the state of this process
     # now we can update the current metrics with the new event data
     tweets_processed = metrics.tweets_processed + 1
