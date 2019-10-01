@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
   </head>
   <body>
-    <section class="hero is-success">
+    <section class="hero" style="background-color:#4B0082;">
       <div class="hero-body">
         <div class="container has-text-centered">
           <!-- bitfeels brand
@@ -17,7 +17,7 @@
             By Alexander Skowalsky, HU In the Abstract elements Collection (https://thenounproject.com/term/network/363874/)
           -->
           <img src="<%= Routes.static_path(@conn, "/images/bitfeels_brand.png") %>" width="300px">
-          <h1 class="subtitle">
+          <h1 class="subtitle" style="color:white;">
             Real-Time Sentiment Analysis
           </h1>
         </div>

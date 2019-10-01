@@ -61,7 +61,9 @@ defmodule SenTweet.Metrics do
 
   defp update_histogram(score, histogram) do
     histogram
-    |> Enum.map(fn [left, right, count] -> [left, right,
-        (if ((score >= left) and (score < right)), do: (count+1), else: count)] end)
+    |> Enum.map(fn [left, right, count] when score >= left and score < right ->
+      [left, right, count+1]
+      bin -> bin
+    end)
   end
 end
