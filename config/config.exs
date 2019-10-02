@@ -9,7 +9,8 @@ use Mix.Config
 
 # Configures bitfeels application
 config :bitfeels, :twitter_stream,
-  sink: SenTweet.Bitfeels
+  tweet_sink: SenTweet.Bitfeels,
+  metric_sink: SenTweet.Metrics
 
 config :bitfeels, :sentiment,
   url: "http://0.0.0.0:5000/score",

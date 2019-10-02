@@ -1,5 +1,23 @@
-<div id="messages-container">
+<nav class="level">
+  <div class="level-item has-text-centered">
+    <div>
+      <p class="heading">Tweets Processed</p>
+      <p class="title" id="tweets-processed"></p>
+    </div>
+  </div>
+  <div class="level-item has-text-centered">
+    <div>
+      <p class="heading">Average Sentiment</p>
+      <p class="title" id="average-score"></p>
+    </div>
+  </div>
+</nav>
 
+<div id="sentiment-histogram" class="has-text-centered">
+  <svg></svg>
+</div>
+
+<div id="messages-container">
   <!-- Tweet template -->
   <article id="tweet-message" class="message" style="display: none;">
     <div id="header" class="message-header">
@@ -51,9 +69,8 @@
     </div>
   </article>
 
-  <!-- output columns -->
+  <!-- tweets column -->
   <div class="columns">
-    <div class="column" id="message_column_center"></div>
+    <div class="column" id="tweets"></div>
   </div>
-
 </div>
