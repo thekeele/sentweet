@@ -6,6 +6,7 @@ defmodule SenTweet.Bitfeels do
   end
 
   def init(opts) do
+    {:ok, _} = Bitfeels.twitter_stream("bitfeels", "bitcoin")
     {:ok, opts}
   end
 

@@ -1,11 +1,13 @@
 defmodule SenTweet.MixProject do
   use Mix.Project
 
+  @version "1.1.0"
+
   def project do
     [
       app: :sen_tweet,
-      version: "1.0.0",
-      elixir: "~> 1.5",
+      version: @version,
+      elixir: "~> 1.9",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -33,7 +35,7 @@ defmodule SenTweet.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bitfeels, github: "thekeele/bitfeels", tag: "v2.0.6"},
+      {:bitfeels, github: "thekeele/bitfeels", ref: "master"},
       {:phoenix, "~> 1.4.6"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
@@ -44,7 +46,7 @@ defmodule SenTweet.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:distillery, "~> 2.0"}
+      {:distillery, "~> 2.1"}
     ]
   end
 

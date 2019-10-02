@@ -7,7 +7,8 @@ defmodule SenTweet.Application do
     children = [
       # SenTweet.Repo,
       SenTweetWeb.Endpoint,
-      {SenTweet.Bitfeels, []}
+      {SenTweet.Bitfeels, []},
+      {SenTweet.Metrics, []}
     ]
 
     opts = [strategy: :one_for_one, name: SenTweet.Supervisor]
