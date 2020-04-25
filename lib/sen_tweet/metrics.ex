@@ -17,7 +17,15 @@ defmodule SenTweet.Metrics do
 
   @impl true
   def init(metrics) do
-    {:ok, metrics}
+    {:ok, tab} = :dets.open_file(:bitcoin_metrics, [type: :set])
+
+    metrics =
+      case :dets.lookup(tab, :metrics) do
+        [] -> metrics
+        [metrics: metrics] -> metrics
+      end
+
+    {:ok, Map.put(metrics, :tab, tab)}
   end
 
   @impl true
@@ -26,28 +34,33 @@ defmodule SenTweet.Metrics do
     # we then process the data and update the metrics
     metrics = handle_event(data, metrics)
 
+    :dets.insert(metrics.tab, {:metrics, metrics})
+
     # broadcast our updated metrics to a channel in order to update the UI
     MetricChannel.broadcast_metrics(metrics)
 
     {:noreply, metrics}
   end
 
-  defp handle_event({"bitfeels_pipeline_source", _id, _time}, metrics) do
+  defp handle_event({"bitfeels_pipeline_source", _measurements, _metadata}, metrics) do
     # this metrics is when a tweet first enters bitfeels
     # we could compute the time it takes for us to process a tweet
     # i.e. through bitfeels pipeline to senpytweet and back
     metrics
   end
 
-  defp handle_event({"bitfeels_pipeline_sentiment", _id, score, _time}, metrics) when is_float(score) do
+  defp handle_event({"bitfeels_pipeline_sentiment", measurements, metadata}, metrics) do
     # the metrics map contains the current metrics in the state of this process
     # now we can update the current metrics with the new event data
     tweets_processed = metrics.tweets_processed + 1
-    sum_scores = metrics.sum_scores + score
+    sum_scores = metrics.sum_scores + measurements.score
     average_score = (sum_scores / tweets_processed) * 100
-    histogram = update_histogram(score, metrics.histogram)
+    histogram = update_histogram(measurements.score, metrics.histogram)
     # put the updated metrics into the metrics map
     metrics
+    |> Map.put(:steam, metadata.stream["track"])
+    |> Map.put(:user, metadata.stream["user"])
+    |> Map.put(:last_metric_at, metadata.time)
     |> Map.put(:tweets_processed, tweets_processed)
     |> Map.put(:sum_scores, sum_scores)
     |> Map.put(:average_score, average_score)
