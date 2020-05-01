@@ -17,7 +17,7 @@ defmodule SenTweet.Metrics do
 
   @impl true
   def init(metrics) do
-    {:ok, tab} = :dets.open_file(:bitcoin_metrics, [type: :set])
+    {:ok, tab} = :dets.open_file('data/bitcoin_metrics', [{:type, :set}])
 
     metrics =
       case :dets.lookup(tab, :metrics) do
