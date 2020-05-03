@@ -5,9 +5,15 @@ defmodule SenTweet.Application do
 
   def start(_type, _args) do
     children = [
+      # Start the Telemetry supervisor
+      SenTweetWeb.Telemetry,
+      # Start the PubSub system
       {Phoenix.PubSub, name: SenTweet.PubSub},
+      # Start the Endpoint (http/https)
       SenTweetWeb.Endpoint,
+      # Start bitfeels twitter stream worker
       {SenTweet.Bitfeels, []},
+      # Start bitfeels metrics worker
       {SenTweet.Metrics, []}
     ]
 
