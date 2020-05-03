@@ -5,7 +5,7 @@ defmodule SenTweet.Application do
 
   def start(_type, _args) do
     children = [
-      # SenTweet.Repo,
+      {Phoenix.PubSub, name: SenTweet.PubSub},
       SenTweetWeb.Endpoint,
       {SenTweet.Bitfeels, []},
       {SenTweet.Metrics, []}
