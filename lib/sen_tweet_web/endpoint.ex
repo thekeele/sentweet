@@ -1,9 +1,18 @@
 defmodule SenTweetWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :sen_tweet
 
+  @session_options [
+    store: :cookie,
+    key: "_sen_tweet_key",
+    signing_salt: "KnlZzNSc"
+  ]
+
   socket "/socket", SenTweetWeb.UserSocket,
     websocket: true,
     longpoll: false
+
+  socket "/live", Phoenix.LiveView.Socket,
+    websocket: [connect_info: @session_options]
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -37,10 +46,7 @@ defmodule SenTweetWeb.Endpoint do
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
-  plug Plug.Session,
-    store: :cookie,
-    key: "_sen_tweet_key",
-    signing_salt: "KnlZzNSc"
+  plug Plug.Session, @session_options
 
   plug SenTweetWeb.Router
 end

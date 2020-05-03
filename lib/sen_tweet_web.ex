@@ -23,6 +23,8 @@ defmodule SenTweetWeb do
 
       import Plug.Conn
       import SenTweetWeb.Gettext
+      import Phoenix.LiveView.Controller
+
       alias SenTweetWeb.Router.Helpers, as: Routes
     end
   end
@@ -41,6 +43,8 @@ defmodule SenTweetWeb do
 
       import SenTweetWeb.ErrorHelpers
       import SenTweetWeb.Gettext
+      import Phoenix.LiveView.Helpers
+
       alias SenTweetWeb.Router.Helpers, as: Routes
     end
   end
@@ -48,14 +52,17 @@ defmodule SenTweetWeb do
   def router do
     quote do
       use Phoenix.Router
+
       import Plug.Conn
       import Phoenix.Controller
+      import Phoenix.LiveView.Router
     end
   end
 
   def channel do
     quote do
       use Phoenix.Channel
+
       import SenTweetWeb.Gettext
     end
   end

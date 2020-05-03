@@ -21,7 +21,10 @@ config :sen_tweet, SenTweetWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "i5dWZ8vZk0YLlnQZ88NP5zNAxuBh8K1cF9rgIVoh+ngUBjkJ28a82ZYb9Lqy3m0y",
   render_errors: [view: SenTweetWeb.ErrorView, accepts: ~w(html json)],
-  pubsub_server: SenTweet.PubSub
+  pubsub_server: SenTweet.PubSub,
+  live_view: [
+    signing_salt: "XM6Bvg6jMHe2p3SsU7khpzQ7zILigTbd"
+  ]
 
 # Configures Elixir's Logger
 config :logger, :console,
