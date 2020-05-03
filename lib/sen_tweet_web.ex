@@ -47,8 +47,8 @@ defmodule SenTweetWeb do
 
   def live_view do
     quote do
-      # use Phoenix.LiveView,
-      #   layout: {SenTweetWeb.LayoutView, "live.html"}
+      use Phoenix.LiveView,
+        layout: {SenTweetWeb.LayoutView, "live.html"}
 
       unquote(view_helpers())
     end

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <%= csrf_meta_tag() %>
+    <title>bitfeels | real-time sentiment analysis</title>
+    <%= live_title_tag assigns[:page_title] || "Hello", suffix: " · Phoenix Framework" %>
+    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
+  </head>
+  <body>
+    <section class="hero" style="background-color:#4B0082;">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <!-- bitfeels brand
+            Happy Love By Marek Polakovic, SK (https://thenounproject.com/term/happy-love/159362/)
+            By Alexander Skowalsky, HU In the Abstract elements Collection (https://thenounproject.com/term/network/363874/)
+          -->
+          <img src="<%= Routes.static_path(@conn, "/images/bitfeels_brand.png") %>" width="300px">
+          <h1 class="subtitle" style="color:white;">
+            Real-Time Sentiment Analysis
+          </h1>
+        </div>
+      </div>
+    </section>
+
+    <%= @inner_content %>
+
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+  </body>
+</html>

@@ -5,7 +5,7 @@ defmodule SenTweetWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    # plug :put_root_layout, {SenTweetWeb.LayoutView, :root}
+    plug :put_root_layout, {SenTweetWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -22,7 +22,7 @@ defmodule SenTweetWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    # live "/", PageLive, :index
+    live "/live", PageLive, :index
   end
 
   scope "/admin", SenTweetWeb do
