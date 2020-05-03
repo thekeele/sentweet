@@ -15,7 +15,7 @@ defmodule SenTweetWeb.Router do
   end
 
   pipeline :auth do
-    plug :basic_auth, username: "bitfeels", password: "password"
+    plug :dashboard_auth
   end
 
   scope "/", SenTweetWeb do
@@ -29,5 +29,15 @@ defmodule SenTweetWeb.Router do
     pipe_through [:browser, :auth]
 
     live_dashboard "/dashboard"
+  end
+
+  defp dashboard_auth(conn, _opts) do
+    with {"bitfeels" = user, user_password} <- Plug.BasicAuth.parse_basic_auth(conn),
+         dashboard_password when is_binary(dashboard_password) <- System.get_env("SENTWEET_DASHBOARD_PASSWORD"),
+         true <- Plug.Crypto.secure_compare(user_password, dashboard_password) do
+      assign(conn, :current_user, user)
+    else
+      _invalid -> conn |> Plug.BasicAuth.request_basic_auth() |> halt()
+    end
   end
 end
