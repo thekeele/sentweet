@@ -18,6 +18,7 @@ config :sen_tweet, SenTweetWeb.Endpoint,
     "http://bitfeels.keele.codes",
     "http://192.168.1.219",
     "http://localhost:4000"
+    # //bitfeels.keele.codes
   ]
 
 config :bitfeels, :sentiment,

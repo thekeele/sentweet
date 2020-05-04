@@ -18,7 +18,8 @@ defmodule SenTweetWeb.ChannelCase do
   using do
     quote do
       # Import conveniences for testing with channels
-      use Phoenix.ChannelTest
+      import Plug.Conn
+      import Phoenix.ConnTest
 
       # The default endpoint for testing
       @endpoint SenTweetWeb.Endpoint
@@ -26,12 +27,6 @@ defmodule SenTweetWeb.ChannelCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(SenTweet.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(SenTweet.Repo, {:shared, self()})
-    end
-
     :ok
   end
 end

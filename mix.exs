@@ -12,7 +12,10 @@ defmodule SenTweet.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      preferred_cli_env: [
+        ci: :test
+      ]
     ]
   end
 
@@ -36,17 +39,18 @@ defmodule SenTweet.MixProject do
   defp deps do
     [
       {:bitfeels, github: "thekeele/bitfeels", tag: "v2.2.2"},
-      {:phoenix, "~> 1.4.6"},
-      {:phoenix_pubsub, "~> 1.1"},
-      {:phoenix_ecto, "~> 4.0"},
-      {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:phoenix, "~> 1.5.1"},
+      {:phoenix_live_view, "~> 0.12.0"},
+      {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
+      {:phoenix_live_dashboard, "~> 0.2.0"},
+      {:telemetry_metrics, "~> 0.4"},
+      {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"},
-      {:distillery, "~> 2.1"}
+      {:plug_cowboy, "~> 2.1"},
+      {:credo, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -58,9 +62,13 @@ defmodule SenTweet.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      setup: ["deps.get", "cmd npm install --prefix assets"],
+      ci: [
+        "compile --warnings-as-errors --force",
+        "format --check-formatted",
+        "test --raise",
+        "credo --strict --all"
+      ]
     ]
   end
 end

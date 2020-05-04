@@ -1,14 +1,5 @@
 use Mix.Config
 
-# Configure your database
-config :sen_tweet, SenTweet.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "sen_tweet_dev",
-  hostname: "localhost",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -60,7 +51,7 @@ config :sen_tweet, SenTweetWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/sen_tweet_web/{live,views}/.*(ex)$",
+      ~r"lib/sen_tweet_web/(live|views)/.*(ex)$",
       ~r"lib/sen_tweet_web/templates/.*(eex)$"
     ]
   ]
