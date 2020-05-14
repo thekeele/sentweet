@@ -1,81 +1,50 @@
 defmodule SenTweet.Metrics do
+  @moduledoc """
+  Reporter module for handling individual events
+
+  Details on how this module is constructed
+  https://hexdocs.pm/telemetry_metrics/writing_reporters.html
+  """
   use GenServer
+  require Logger
+  alias SenTweet.Bitfeels
 
-  alias SenTweetWeb.MetricChannel
-
-  def start_link(_opts) do
-    # add metrics here with an initial value
-    metrics = %{
-      tweets_processed: 0,
-      sum_scores: 0,
-      average_score: 0,
-      histogram: Enum.map(0..10, &[-1 + 2*&1/11, -1 + 2*(&1+1)/11, 0])
-    }
+  def start_link(opts) do
+    metrics =
+      opts[:metrics] ||
+        raise ArgumentError, "the :metrics option is required by #{inspect(__MODULE__)}"
 
     GenServer.start_link(__MODULE__, metrics, name: __MODULE__)
   end
 
   @impl true
   def init(metrics) do
-    {:ok, tab} = :dets.open_file('data/bitcoin_metrics', [{:type, :set}])
+    Process.flag(:trap_exit, true)
+    groups = Enum.group_by(metrics, & &1.event_name)
 
-    metrics =
-      case :dets.lookup(tab, :metrics) do
-        [] -> metrics
-        [metrics: metrics] -> metrics
-      end
+    for {event, metrics} <- groups do
+      id = {__MODULE__, event, self()}
+      :telemetry.attach(id, event, &handle_event/4, metrics)
+    end
 
-    {:ok, Map.put(metrics, :tab, tab)}
+    {:ok, Map.keys(groups)}
   end
 
   @impl true
-  def handle_info({:bitfeels_event, data}, metrics) do
-    # here we receive event data from bitfeels
-    # we then process the data and update the metrics
-    metrics = handle_event(data, metrics)
+  def terminate(_, events) do
+    for event <- events do
+      :telemetry.detach({__MODULE__, event, self()})
+    end
 
-    :dets.insert(metrics.tab, {:metrics, metrics})
-
-    # broadcast our updated metrics to a channel in order to update the UI
-    MetricChannel.broadcast_metrics(metrics)
-
-    {:noreply, metrics}
+    :ok
   end
 
-  defp handle_event({"bitfeels_pipeline_source", _measurements, _metadata}, metrics) do
-    # this metrics is when a tweet first enters bitfeels
-    # we could compute the time it takes for us to process a tweet
-    # i.e. through bitfeels pipeline to senpytweet and back
-    metrics
+  defp handle_event([:bitfeels | _] = event_name, measurements, metadata, _metrics) do
+    Bitfeels.Metrics.handle_event(event_name, measurements, metadata)
   end
 
-  defp handle_event({"bitfeels_pipeline_sentiment", measurements, metadata}, metrics) do
-    # the metrics map contains the current metrics in the state of this process
-    # now we can update the current metrics with the new event data
-    tweets_processed = metrics.tweets_processed + 1
-    sum_scores = metrics.sum_scores + measurements.score
-    average_score = (sum_scores / tweets_processed) * 100
-    histogram = update_histogram(measurements.score, metrics.histogram)
-    # put the updated metrics into the metrics map
-    metrics
-    |> Map.put(:steam, metadata.stream["track"])
-    |> Map.put(:user, metadata.stream["user"])
-    |> Map.put(:last_metric_at, metadata.time)
-    |> Map.put(:tweets_processed, tweets_processed)
-    |> Map.put(:sum_scores, sum_scores)
-    |> Map.put(:average_score, average_score)
-    |> Map.put(:histogram, histogram)
-  end
-
-  defp handle_event(_data, metrics) do
-    metrics
-  end
-
-  defp update_histogram(score, histogram) do
-    histogram
-    |> Enum.map(fn [left, right, count] when score >= left and score < right ->
-      [left, right, count+1]
-      bin -> bin
-    end)
+  defp handle_event(_event_name, _measurements, _metadata, _metrics) do
+    :ok
   end
 end
+
