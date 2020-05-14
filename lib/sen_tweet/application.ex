@@ -13,8 +13,8 @@ defmodule SenTweet.Application do
       SenTweetWeb.Endpoint,
       # Start bitfeels twitter stream worker
       {SenTweet.Bitfeels, []},
-      # Start bitfeels metrics worker
-      {SenTweet.Metrics, []}
+      # Start bitfeels metric server
+      {SenTweet.Bitfeels.MetricServer, []}
     ]
 
     opts = [strategy: :one_for_one, name: SenTweet.Supervisor]
