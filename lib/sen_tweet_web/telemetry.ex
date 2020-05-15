@@ -60,6 +60,7 @@ defmodule SenTweetWeb.Telemetry do
       last_value("bitfeels.pipeline.sentiment.number_of_events"),
       counter("bitfeels.pipeline.sentiment.id", tags: [:track]),
       summary("bitfeels.pipeline.sentiment.score", tags: [:track]),
+      sum("bitfeels.pipeline.sentiment.score", tags: [:tweet_type]),
 
       # Bitfeels Tweet Parser Metrics
       counter("bitfeels.tweet.parser.id", tags: [:tweet_type]),
