@@ -4,6 +4,8 @@ defmodule SenTweet.Bitfeels.MetricServer do
   """
   use GenServer
 
+  alias SenTweet.Bitfeels.Metrics
+
   # save to file every 5 minutes
   @save_interval 5 * 60 * 1000
 
@@ -47,7 +49,7 @@ defmodule SenTweet.Bitfeels.MetricServer do
             Map.put(state, stream_key, metrics)
 
           [] ->
-            Map.put(state, stream_key, create_metrics())
+            Map.put(state, stream_key, Metrics.create_metrics())
         end
       end
 
@@ -81,15 +83,6 @@ defmodule SenTweet.Bitfeels.MetricServer do
   end
 
   # Helpers
-
-  defp create_metrics() do
-    %{
-      tweets_processed: 0,
-      sum_scores: 0,
-      average_score: 0,
-      histogram: Enum.map(0..10, &[-1 + 2*&1/11, -1 + 2*(&1+1)/11, 0])
-    }
-  end
 
   defp schedule_metrics_saving(stream_key) do
     Process.send_after(self(), {:save_metrics, stream_key}, @save_interval)

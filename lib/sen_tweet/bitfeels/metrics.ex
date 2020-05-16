@@ -6,6 +6,15 @@ defmodule SenTweet.Bitfeels.Metrics do
   alias SenTweet.Bitfeels.MetricServer
   alias SenTweetWeb.MetricChannel
 
+  def create_metrics() do
+    %{
+      tweets_processed: 0,
+      sum_scores: 0,
+      average_score: 0,
+      histogram: Enum.map(0..10, &[-1 + 2*&1/11, -1 + 2*(&1+1)/11, 0])
+    }
+  end
+
   def handle_event([:bitfeels, :pipeline, :source], _measurements, metadata) do
     MetricServer.init_metrics(metadata)
   end
