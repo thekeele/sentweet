@@ -38,14 +38,14 @@ defmodule SenTweet.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bitfeels, github: "thekeele/bitfeels", tag: "v2.2.2"},
+      {:bitfeels, github: "thekeele/bitfeels", tag: "v2.2.3"},
       {:phoenix, "~> 1.5.1"},
       {:phoenix_live_view, "~> 0.12.0"},
       {:phoenix_pubsub, "~> 2.0"},
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.2.0"},
-      {:telemetry_metrics, "~> 0.4"},
+      {:phoenix_live_dashboard, "~> 0.2.3"},
+      {:telemetry_metrics, "~> 0.5"},
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
