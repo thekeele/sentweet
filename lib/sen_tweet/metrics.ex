@@ -47,4 +47,3 @@ defmodule SenTweet.Metrics do
     :ok
   end
 end
-

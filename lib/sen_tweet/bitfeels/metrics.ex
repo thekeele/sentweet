@@ -11,7 +11,7 @@ defmodule SenTweet.Bitfeels.Metrics do
       tweets_processed: 0,
       sum_scores: 0,
       average_score: 0,
-      histogram: Enum.map(0..10, &[-1 + 2*&1/11, -1 + 2*(&1+1)/11, 0])
+      histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0])
     }
   end
 
@@ -35,7 +35,7 @@ defmodule SenTweet.Bitfeels.Metrics do
   defp calculate_metrics(metrics, measurements, metadata) do
     tweets_processed = metrics.tweets_processed + 1
     sum_scores = metrics.sum_scores + measurements.score
-    average_score = (sum_scores / tweets_processed) * 100
+    average_score = sum_scores / tweets_processed * 100
     histogram = update_histogram(measurements.score, metrics.histogram)
 
     metrics
@@ -50,9 +50,12 @@ defmodule SenTweet.Bitfeels.Metrics do
 
   defp update_histogram(score, histogram) do
     histogram
-    |> Enum.map(fn [left, right, count] when score >= left and score < right ->
-      [left, right, count+1]
-      bin -> bin
+    |> Enum.map(fn
+      [left, right, count] when score >= left and score < right ->
+        [left, right, count + 1]
+
+      bin ->
+        bin
     end)
   end
 end

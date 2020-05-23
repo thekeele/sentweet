@@ -51,7 +51,6 @@ defmodule SenTweetWeb.Telemetry do
       # Bitfeels Pipeline Dispatcher Metrics
       last_value("bitfeels.pipeline.dispatcher.enqueue.queue_length"),
       last_value("bitfeels.pipeline.dispatcher.enqueue.pending_demand"),
-
       last_value("bitfeels.pipeline.dispatcher.dequeue.queue_length"),
       last_value("bitfeels.pipeline.dispatcher.dequeue.demand"),
       last_value("bitfeels.pipeline.dispatcher.dequeue.events"),
