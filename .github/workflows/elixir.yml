@@ -1,0 +1,35 @@
+name: Elixir CI
+
+on:
+  push:
+    branches:
+    - master
+    - feature/*
+  pull_request:
+    branches:
+    - master
+    - feature/*
+
+jobs:
+  build:
+    name: deploy to prod env
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup elixir
+      uses: actions/setup-elixir@v1
+      with:
+        elixir-version: 1.10.3 # Define the elixir version [required]
+        otp-version: 23.0 # Define the OTP version [required]
+    - name: Install Deps
+      run: mix deps.get
+    - name: Compile Deps
+      run: mix deps.get
+    - name: Compile App
+      run: mix compile
+    - name: Format Code
+      run: mix format
+    # todo: smoke test
+    #- name: Run Tests
+    #  run: mix test
