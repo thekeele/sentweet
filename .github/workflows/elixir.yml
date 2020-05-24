@@ -21,18 +21,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup elixir
+    - name: Set up elixir
       uses: actions/setup-elixir@v1
       with:
         otp-version: ${{matrix.otp}}
         elixir-version: ${{matrix.elixir}}
 
-    - name: Setup node
+    - name: Set up node
       uses: actions/setup-node@v1
       with:
         node-version: ${{matrix.node}}
 
-    - name: Install Deps
+    - name: Install deps
       run: |
         mix local.rebar --force
         mix local.hex --force
