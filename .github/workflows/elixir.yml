@@ -6,17 +6,27 @@ on:
     - master
     - feature/*
 
+defaults:
+  runs-on: ${{matrix.os}}
+
+  strategy:
+    matrix:
+      os: [ubuntu-18.04]
+      otp: ['23.0']
+      elixir: ['1.10.3']
+      node: ['10.16.0']
+
 jobs:
   verify:
     name: Verify |> ${{matrix.os}} |> OTP ${{matrix.otp}} |> Elixir ${{matrix.elixir}} |> Node ${{matrix.node}}
-    runs-on: ${{matrix.os}}
+    # runs-on: ${{matrix.os}}
 
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
-        otp: ['23.0']
-        elixir: ['1.10.3']
-        node: ['10.16.0']
+    # strategy:
+    #   matrix:
+    #     os: [ubuntu-18.04]
+    #     otp: ['23.0']
+    #     elixir: ['1.10.3']
+    #     node: ['10.16.0']
 
     steps:
     - uses: actions/checkout@v2
@@ -47,36 +57,36 @@ jobs:
         mix deps.get
         mix deps.compile
 
-    - name: Compile app
-      run: |
-        mix compile --warnings-as-errors
+    # - name: Compile app
+    #   run: |
+    #     mix compile --warnings-as-errors
 
-    - name: Check formatting
-      run: |
-        mix format --check-formatted
+    # - name: Check formatting
+    #   run: |
+    #     mix format --check-formatted
 
-    - name: Run Credo
-      run: mix credo --strict
+    # - name: Run Credo
+    #   run: mix credo --strict
 
-    - name: Retrieve PLT Cache
-      uses: actions/cache@v1
-      id: plt-cache
-      with:
-        path: priv/plts
-        key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+    # - name: Retrieve PLT Cache
+    #   uses: actions/cache@v1
+    #   id: plt-cache
+    #   with:
+    #     path: priv/plts
+    #     key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
-    - name: Create PLTs
+    # - name: Create PLTs
       # if: steps.plt-cache.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p priv/plts
-        mix dialyzer --plt
+    #   run: |
+    #     mkdir -p priv/plts
+    #     mix dialyzer --plt
 
-    - name: Run dialyzer
-      run: mix dialyzer --no-check --halt-exit-status
+    # - name: Run dialyzer
+    #   run: mix dialyzer --no-check --halt-exit-status
 
-    - name: Build release
-      run: |
-        mix phx.digest
-        mix release
-      env:
-        MIX_ENV: prod
+    # - name: Build release
+    #   run: |
+    #     mix phx.digest
+    #     mix release
+    #   env:
+    #     MIX_ENV: prod
