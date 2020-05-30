@@ -1,4 +1,6 @@
 defmodule SenTweetWeb.MetricChannel do
+  @moduledoc false
+
   use Phoenix.Channel
 
   def join("room:metrics", _message, socket) do

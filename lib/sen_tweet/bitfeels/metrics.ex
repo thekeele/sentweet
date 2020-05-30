@@ -6,7 +6,7 @@ defmodule SenTweet.Bitfeels.Metrics do
   alias SenTweet.Bitfeels.MetricServer
   alias SenTweetWeb.MetricChannel
 
-  def create_metrics() do
+  def create_metrics do
     %{
       tweets_processed: 0,
       sum_scores: 0,

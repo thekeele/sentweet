@@ -1,4 +1,6 @@
 defmodule SenTweetWeb.PageLive do
+  @moduledoc false
+
   use SenTweetWeb, :live_view
 
   @impl true

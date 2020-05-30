@@ -1,4 +1,6 @@
 defmodule SenTweet.Bitfeels do
+  @moduledoc false
+
   use GenServer
 
   def start_link(opts) do
