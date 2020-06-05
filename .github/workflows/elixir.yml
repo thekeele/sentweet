@@ -89,7 +89,6 @@ jobs:
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          whoami
-          ls -la
           cd sentweet
-          ls -la
+          ls
+          whoami
