@@ -49,14 +49,6 @@ jobs:
     - name: Run Credo
       run: mix credo --strict
 
-    - name: Create PLTs
-      run: |
-        mkdir -p priv/plts
-        mix dialyzer --plt
-
-    - name: Run dialyzer
-      run: mix dialyzer --no-check --halt-exit-status
-
   deploy:
     # only run this job if the verify job succeeds
     needs: verify
@@ -64,12 +56,8 @@ jobs:
     # only deploy when master is the target
     if: github.ref == 'refs/heads/master'
 
-    name: Deploy Release |> ${{matrix.os}}
-    runs-on: ${{matrix.os}}
-
-    strategy:
-      matrix:
-        os: [ubuntu-16.04]
+    name: Deploy Release
+    runs-on: ubuntu-latest
 
     steps:
     - name: Deploy release to bitfeels.keele.codes
