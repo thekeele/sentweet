@@ -73,8 +73,12 @@ jobs:
     # uncomment this before master merge
     # if: github.ref == 'refs/heads/master'
 
-    name: Deploy Release
+    name: Deploy Release |> ${{matrix.os}}
     runs-on: ${{matrix.os}}
+
+    strategy:
+      matrix:
+        os: [ubuntu-16.04]
 
     steps:
     - name: Deploy release to bitfeels.keele.codes
