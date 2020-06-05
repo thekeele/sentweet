@@ -49,29 +49,28 @@ jobs:
     - name: Run Credo
       run: mix credo --strict
 
-    # this is slow, uncomment before master merge
-    # - name: Retrieve PLT Cache
-    #   uses: actions/cache@v1
-    #   id: plt-cache
-    #   with:
-    #     path: priv/plts
-    #     key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
+    - name: Retrieve PLT Cache
+      uses: actions/cache@v1
+      id: plt-cache
+      with:
+        path: priv/plts
+        key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
 
-    # - name: Create PLTs
-      # if: steps.plt-cache.outputs.cache-hit != 'true'
-    #   run: |
-    #     mkdir -p priv/plts
-    #     mix dialyzer --plt
+    - name: Create PLTs
+      if: steps.plt-cache.outputs.cache-hit != 'true'
+      run: |
+        mkdir -p priv/plts
+        mix dialyzer --plt
 
-    # - name: Run dialyzer
-    #   run: mix dialyzer --no-check --halt-exit-status
+    - name: Run dialyzer
+      run: mix dialyzer --no-check --halt-exit-status
 
   deploy:
     # only run this job if the verify job succeeds
     needs: verify
 
-    # uncomment this before master merge
-    # if: github.ref == 'refs/heads/master'
+    # only deploy when master is the target
+    if: github.ref == 'refs/heads/master'
 
     name: Deploy Release |> ${{matrix.os}}
     runs-on: ${{matrix.os}}
@@ -90,5 +89,4 @@ jobs:
         port: ${{ secrets.PORT }}
         script: |
           cd sentweet
-          ls
-          whoami
+          sh deploy.sh
