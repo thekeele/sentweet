@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # bail if any command fails
-trap 'exit' ERR
+set -e
 
 # pull sentweet master
 git pull origin master
