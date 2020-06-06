@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-18.04]
+        os: [ubuntu-16.04]
         otp: ['23.0']
         elixir: ['1.10.3']
         node: ['10.16.0']
@@ -49,70 +49,24 @@ jobs:
     - name: Run Credo
       run: mix credo --strict
 
-    # - name: Retrieve PLT Cache
-    #   uses: actions/cache@v1
-    #   id: plt-cache
-    #   with:
-    #     path: priv/plts
-    #     key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-plts-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-
-    - name: Create PLTs
-      # if: steps.plt-cache.outputs.cache-hit != 'true'
-      run: |
-        mkdir -p priv/plts
-        mix dialyzer --plt
-
-    - name: Run dialyzer
-      run: mix dialyzer --no-check --halt-exit-status
-
   deploy:
     # only run this job if the verify job succeeds
     needs: verify
 
-    # only run this job if the workflow is running on the master branch
+    # only deploy when master is the target
     if: github.ref == 'refs/heads/master'
 
-    name: Deploy |> ${{matrix.os}} |> OTP ${{matrix.otp}} |> Elixir ${{matrix.elixir}} |> Node ${{matrix.node}}
-    runs-on: ${{matrix.os}}
-
-    strategy:
-      matrix:
-        os: [ubuntu-18.04]
-        otp: ['23.0']
-        elixir: ['1.10.3']
-        node: ['10.16.0']
+    name: Deploy Release
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-
-    - name: Setup elixir
-      uses: actions/setup-elixir@v1
+    - name: Deploy release to bitfeels.keele.codes
+      uses: appleboy/ssh-action@master
       with:
-        otp-version: ${{matrix.otp}}
-        elixir-version: ${{matrix.elixir}}
-
-    - name: Retrieve Mix Dependencies Cache
-      uses: actions/cache@v1
-      id: mix-cache # id to use in retrieve action
-      with:
-        path: deps
-        key: ${{ runner.os }}-${{ matrix.otp }}-${{ matrix.elixir }}-mix-${{ hashFiles(format('{0}{1}', github.workspace, '/mix.lock')) }}
-
-    - name: Set up node
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{matrix.node}}
-
-    - name: Install deps
-      if: steps.mix-cache.outputs.cache-hit != 'true'
-      run: |
-        mix local.rebar --force
-        mix local.hex --force
-        mix deps.get --only prod
-
-    - name: Build release
-      run: |
-        mix phx.digest
-        mix release
-      env:
-        MIX_ENV: prod
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd sentweet
+          sh deploy.sh
