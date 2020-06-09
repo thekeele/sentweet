@@ -22,7 +22,9 @@ config :sen_tweet, SenTweetWeb.Endpoint,
   ]
 
 config :bitfeels, :sentiment,
-  url: "http://senpytweet:5000/score",
+  # when running on docker network
+  # url: "http://senpytweet:5000/score",
+  url: "http://0.0.0.0:5000/score",
   model: "spacy"
 
 # Do not print debug messages in production
