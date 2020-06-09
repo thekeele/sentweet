@@ -8,6 +8,9 @@
 <div>
 <div class="has-text-left">
   <%= for stream <- @streams do %>
-    <div class="item"><%= stream %></div>
+    <div class="item">
+      User: <%= stream[:user] %>
+      Track: <%= stream[:track] %>
+    </div>
   <% end %>
 </div>
