@@ -1,0 +1,34 @@
+<nav class="level">
+  <div class="has-text-left">
+    <p class="title">
+      Active Streams
+    </p>
+  </div>
+</nav>
+<div>
+<div class="has-text-left">
+  <table class="table is-striped has-text-centered">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Track</th>
+      </tr>
+    </thead>
+    <tbody>
+    <%= for stream <- @streams do %>
+      <tr>
+        <td><%= stream[:user] %></td>
+        <td><%= stream[:track] %></td>
+        <td class="button is-danger"> Delete </td>
+      </tr>
+    <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan=2>
+          <div class="button is-link">New Stream</button>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
