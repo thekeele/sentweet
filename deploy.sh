@@ -21,6 +21,7 @@ if [ $? -eq 0 ]
 then
   echo "Restarting Release"
   _build/prod/rel/sen_tweet/bin/sen_tweet stop
+  sleep 3s
   _build/prod/rel/sen_tweet/bin/sen_tweet daemon_iex
 else
   echo "Starting Release as Daemon"
