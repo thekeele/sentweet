@@ -1,17 +1,18 @@
-<nav class="level">
-  <div class="has-text-left">
-    <p class="title">
-      Active Streams
-    </p>
-  </div>
-</nav>
-<div>
-<div class="has-text-left">
-  <table class="table is-striped has-text-centered">
+<div class="container">
+  <nav class="level">
+    <div class="has-text-left">
+      <p class="title">
+        Active Streams
+      </p>
+   </div>
+  </nav>
+</div>
+<div class="container">
+  <table class="table is-striped has-text-centered is-hoverable is-fullwidth">
     <thead>
       <tr>
         <th>User</th>
-        <th>Track</th>
+        <th colspan=2>Track</th>
       </tr>
     </thead>
     <tbody>
@@ -19,14 +20,26 @@
       <tr>
         <td><%= stream[:user] %></td>
         <td><%= stream[:track] %></td>
-        <td class="button is-danger"> Delete </td>
+        <td class="has-text-right">
+          <div class="button is-danger is-outlined">
+            <span>Delete</span>
+            <span class="icon is-small">
+              <i class="fas fa-trash"></i>
+            </span>
+          </div>
+        </td>
       </tr>
     <% end %>
     </tbody>
     <tfoot>
       <tr>
-        <td colspan=2>
-          <div class="button is-link">New Stream</button>
+        <td colspan=3>
+          <div class="button is-link is-outlined">
+            <span>New Stream</span>
+            <span class="icon is-small">
+              <i class="fas fa-rocket"></i>
+            </span>
+          </div>
         </td>
       </tr>
     </tfoot>
