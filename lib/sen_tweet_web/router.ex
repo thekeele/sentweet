@@ -27,8 +27,8 @@ defmodule SenTweetWeb.Router do
 
   scope "/admin", SenTweetWeb do
     pipe_through([:browser, :auth])
-
     live_dashboard("/dashboard", metrics: SenTweetWeb.Telemetry)
+    resources("/streams", StreamController, only: [:index, :create, :delete])
   end
 
   defp dashboard_auth(conn, _opts) do
