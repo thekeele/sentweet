@@ -21,12 +21,12 @@
         <td><%= stream[:user] %></td>
         <td><%= stream[:track] %></td>
         <td class="has-text-right">
-          <div class="button is-danger is-outlined">
-            <span>Delete</span>
-            <span class="icon is-small">
-              <i class="fas fa-trash"></i>
-            </span>
-          </div>
+          <%= link to: "/admin/streams/#{stream[:user]}_#{stream[:track]}", method: :delete do %>
+            <button class="button is-danger is-outlined">
+              <span> Delete </span>
+              <span class="icon is-small"> <i class="fas fa-trash"></i> </span>
+            </button>
+          <% end %>
         </td>
       </tr>
     <% end %>
