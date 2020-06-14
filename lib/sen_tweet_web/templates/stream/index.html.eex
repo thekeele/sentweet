@@ -34,12 +34,12 @@
     <tfoot>
       <tr>
         <td colspan=3>
-          <div class="button is-link is-outlined">
-            <span>New Stream</span>
-            <span class="icon is-small">
-              <i class="fas fa-rocket"></i>
-            </span>
-          </div>
+          <%= link to: "/admin/streams/new" do %>
+            <button class="button is-outlined is-link">
+              <span> New Stream </span>
+              <span> <i class="fas fa-rocket"></i> </span>
+            </button>
+          <% end %>
         </td>
       </tr>
     </tfoot>

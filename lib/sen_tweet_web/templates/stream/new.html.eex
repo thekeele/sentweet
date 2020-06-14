@@ -1,0 +1,25 @@
+<div class="container">
+  <nav class="level">
+    <div class="has-text-left">
+      <p class="title">
+        Start New Stream
+      </p>
+   </div>
+  </nav>
+</div>
+<div class="container">
+  <%= form_for @conn, Routes.stream_path(@conn, :create), fn f -> %>
+    <div class="level">
+      <div class="container"> User </div>
+      <%= text_input f, :user, placeholder: "Ex: bitfeels" %>
+    </div>
+    <div class="level">
+      <div class="container"> Track </div>
+      <%= text_input f, :track, placeholder: "Ex: bitcoin" %>
+    </div>
+    <div class="level">
+      <div class="container"> Filter Level </div>
+      <%=select f, :filter_level, ["none", "low", "medium"]%>
+    <%= submit "Submit" %>
+  <% end %>
+</div>
