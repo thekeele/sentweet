@@ -9,8 +9,8 @@ defmodule SenTweetWeb.StreamController do
     render(conn, "new.html")
   end
 
-  def create(conn, %{"user" => user, "track" => track, "filter_level" => filter_level}) do
-    Bitfeels.twitter_stream(user, track, filter_level)
-    redirect(conn, to: "/admin/streams")
+  def create(conn, %{"track" => track, "filter_level" => filter_level}) do
+    Bitfeels.twitter_stream(conn.assigns[:current_user], track, filter_level)
+    redirect(conn, to: Routes.stream_path(conn, :index))
   end
 end

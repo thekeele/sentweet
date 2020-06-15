@@ -21,12 +21,10 @@
         <td><%= stream[:user] %></td>
         <td><%= stream[:track] %></td>
         <td class="has-text-right">
-          <div class="button is-danger is-outlined">
-            <span>Delete</span>
-            <span class="icon is-small">
-              <i class="fas fa-trash"></i>
-            </span>
-          </div>
+          <button class="button is-danger is-outlined">
+            <span> Delete </span>
+            <span class="icon is-small"> <i class="fas fa-trash"></i> </span>
+          </button>
         </td>
       </tr>
     <% end %>
@@ -34,7 +32,7 @@
     <tfoot>
       <tr>
         <td colspan=3>
-          <%= link to: "/admin/streams/new" do %>
+          <%= link to: Routes.stream_path(@conn, :new) do %>
             <button class="button is-outlined is-link">
               <span> New Stream </span>
               <span> <i class="fas fa-rocket"></i> </span>
