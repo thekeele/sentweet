@@ -6,11 +6,12 @@ defmodule SenTweetWeb.StreamController do
   end
 
   def new(conn, _params) do
+    IO.inspect(conn)
     render(conn, "new.html")
   end
 
-  def create(conn, %{"user" => user, "track" => track, "filter_level" => filter_level}) do
-    Bitfeels.twitter_stream(user, track, filter_level)
+  def create(conn, %{"track" => track, "filter_level" => filter_level}) do
+    Bitfeels.twitter_stream(conn.assigns[:current_user], track, filter_level)
     redirect(conn, to: "/admin/streams")
   end
 
