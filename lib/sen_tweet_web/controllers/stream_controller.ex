@@ -6,18 +6,17 @@ defmodule SenTweetWeb.StreamController do
   end
 
   def new(conn, _params) do
-    IO.inspect(conn)
     render(conn, "new.html")
   end
 
   def create(conn, %{"track" => track, "filter_level" => filter_level}) do
     Bitfeels.twitter_stream(conn.assigns[:current_user], track, filter_level)
-    redirect(conn, to: "/admin/streams")
+    redirect(conn, to: Routes.stream_path(conn, :index))
   end
 
   def delete(conn, %{"id" => id}) do
     [user, track] = String.split(id, "_")
     Bitfeels.stop_stream(user, track)
-    redirect(conn, to: "/admin/streams")
+    redirect(conn, to: Routes.stream_path(conn, :index))
   end
 end
