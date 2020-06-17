@@ -2,7 +2,6 @@
 
 set -e
 
-git stash
 git pull origin master
 
 mix local.rebar --force
@@ -19,5 +18,3 @@ _build/prod/rel/sen_tweet/bin/sen_tweet version
 
 echo "Release PID"
 _build/prod/rel/sen_tweet/bin/sen_tweet pid
-
-git stash pop
