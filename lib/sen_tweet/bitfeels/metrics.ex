@@ -7,12 +7,13 @@ defmodule SenTweet.Bitfeels.Metrics do
   alias SenTweetWeb.MetricChannel
 
   def create_metrics do
-    %{
+    for type <- ["extended_tweet", "retweeted_status", "quoted_status", "text"], into: %{}, do:
+    {type, %{
       tweets_processed: 0,
       sum_scores: 0,
       average_score: 0,
       histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0])
-    }
+    }}
   end
 
   def handle_event([:bitfeels, :pipeline, :source], _measurements, metadata) do
@@ -32,20 +33,28 @@ defmodule SenTweet.Bitfeels.Metrics do
     %{}
   end
 
-  defp calculate_metrics(metrics, measurements, metadata) do
-    tweets_processed = metrics.tweets_processed + 1
-    sum_scores = metrics.sum_scores + measurements.score
+  defp calculate_metrics(metrics, measurements, %{tweet_type: type} = metadata) do
+    IO.inspect(metrics)
+    IO.inspect(measurements)
+    IO.inspect(metadata)
+    IO.inspect(type)
+
+    current_metrics = metrics[type]
+    tweets_processed = current_metrics.tweets_processed + 1
+    sum_scores = current_metrics.sum_scores + measurements.score
     average_score = sum_scores / tweets_processed * 100
-    histogram = update_histogram(measurements.score, metrics.histogram)
+    histogram = update_histogram(measurements.score, current_metrics.histogram)
 
     metrics
-    |> Map.put(:user, metadata.user)
-    |> Map.put(:track, metadata.track)
-    |> Map.put(:last_metric_at, measurements.time)
-    |> Map.put(:tweets_processed, tweets_processed)
-    |> Map.put(:sum_scores, sum_scores)
-    |> Map.put(:average_score, average_score)
-    |> Map.put(:histogram, histogram)
+    |> Map.put(type, current_metrics
+      |> Map.put(:user, metadata.user)
+      |> Map.put(:track, metadata.track)
+      |> Map.put(:last_metric_at, measurements.time)
+      |> Map.put(:tweets_processed, tweets_processed)
+      |> Map.put(:sum_scores, sum_scores)
+      |> Map.put(:average_score, average_score)
+      |> Map.put(:histogram, histogram)
+    )
   end
 
   defp update_histogram(score, histogram) do
