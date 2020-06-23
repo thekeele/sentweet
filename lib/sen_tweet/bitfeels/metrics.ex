@@ -34,10 +34,6 @@ defmodule SenTweet.Bitfeels.Metrics do
   end
 
   defp calculate_metrics(metrics, measurements, %{tweet_type: type} = metadata) do
-    IO.inspect(metrics)
-    IO.inspect(measurements)
-    IO.inspect(metadata)
-    IO.inspect(type)
 
     current_metrics = metrics[type]
     tweets_processed = current_metrics.tweets_processed + 1
