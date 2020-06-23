@@ -7,13 +7,16 @@ defmodule SenTweet.Bitfeels.Metrics do
   alias SenTweetWeb.MetricChannel
 
   def create_metrics do
-    for type <- ["extended_tweet", "retweeted_status", "quoted_status", "text"], into: %{}, do:
-    {type, %{
-      tweets_processed: 0,
-      sum_scores: 0,
-      average_score: 0,
-      histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0])
-    }}
+    for type <- ["extended_tweet", "retweeted_status", "quoted_status", "text"],
+        into: %{},
+        do:
+          {type,
+           %{
+             tweets_processed: 0,
+             sum_scores: 0,
+             average_score: 0,
+             histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0])
+           }}
   end
 
   def handle_event([:bitfeels, :pipeline, :source], _measurements, metadata) do
@@ -34,7 +37,6 @@ defmodule SenTweet.Bitfeels.Metrics do
   end
 
   defp calculate_metrics(metrics, measurements, %{tweet_type: type} = metadata) do
-
     current_metrics = metrics[type]
     tweets_processed = current_metrics.tweets_processed + 1
     sum_scores = current_metrics.sum_scores + measurements.score
@@ -42,7 +44,9 @@ defmodule SenTweet.Bitfeels.Metrics do
     histogram = update_histogram(measurements.score, current_metrics.histogram)
 
     metrics
-    |> Map.put(type, current_metrics
+    |> Map.put(
+      type,
+      current_metrics
       |> Map.put(:user, metadata.user)
       |> Map.put(:track, metadata.track)
       |> Map.put(:last_metric_at, measurements.time)
