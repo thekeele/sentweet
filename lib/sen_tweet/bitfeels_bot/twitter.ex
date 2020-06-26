@@ -27,7 +27,7 @@ defmodule SenTweet.BitfeelsBot.Twitter do
     method = "post"
     url = "https://api.twitter.com/1.1/statuses/lookup.json"
     params = [{"id", tweet_id}]
-    {header, req_params} = Auth.auth_header(method, url, params) |> IO.inspect()
+    {header, req_params} = Auth.auth_header(method, url, params)
 
     do_request(url, header, req_params)
   end
