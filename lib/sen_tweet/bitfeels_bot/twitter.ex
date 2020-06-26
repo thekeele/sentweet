@@ -14,7 +14,7 @@ defmodule SenTweet.BitfeelsBot.Twitter do
 
   alias SenTweet.BitfeelsBot.Auth
 
-  def tweet() do
+  def tweet do
     method = "post"
     url = "https://api.twitter.com/1.1/statuses/update.json"
     params = [{"status", "hello twitter 🤖"}]

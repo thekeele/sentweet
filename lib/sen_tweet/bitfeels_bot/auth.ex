@@ -29,7 +29,7 @@ defmodule SenTweet.BitfeelsBot.Auth do
     OAuther.sign(method, url, params, credentials())
   end
 
-  defp credentials() do
+  defp credentials do
     OAuther.credentials(
       consumer_key: System.get_env("TWITTER_CONSUMER_KEY"),
       consumer_secret: System.get_env("TWITTER_CONSUMER_SECRET"),
