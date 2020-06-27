@@ -6,17 +6,10 @@ defmodule SenTweet.Bitfeels.Metrics do
   alias SenTweet.Bitfeels.MetricServer
   alias SenTweetWeb.MetricChannel
 
+  @tweet_types ["extended_tweet", "retweeted_status", "quoted_status", "text"]
+
   def create_metrics do
-    for type <- ["extended_tweet", "retweeted_status", "quoted_status", "text"],
-        into: %{},
-        do:
-          {type,
-           %{
-             tweets_processed: 0,
-             sum_scores: 0,
-             average_score: 0,
-             histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0]),
-           }}
+    for type <- @tweet_types, into: %{}, do: {type, default_metrics()}
   end
 
   def handle_event([:bitfeels, :pipeline, :source], _measurements, metadata) do
@@ -64,4 +57,13 @@ defmodule SenTweet.Bitfeels.Metrics do
         bin
     end)
   end
+
+  defp default_metrics do
+    %{
+       tweets_processed: 0,
+       sum_scores: 0,
+       average_score: 0,
+       histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0]),
+     }
+   end
 end
