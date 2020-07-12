@@ -68,7 +68,6 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY }}
         port: ${{ secrets.PORT }}
-        command: . ./sentweet/deploy.sh
-        # script: |
-        #   cd sentweet
-        #   sh deploy.sh
+        script: |
+          cd sentweet
+          sh deploy.sh
