@@ -30,11 +30,13 @@ defmodule SenTweet.Bitfeels.Metrics do
   end
 
   defp calculate_metrics(metrics, measurements, %{tweet_type: type} = metadata) do
-    %{metrics | type =>
-      update_stats(measurements.score, metrics[type])
-      |> Map.put(:user, metadata.user)
-      |> Map.put(:track, metadata.track)
-      |> Map.put(:last_metric_at, measurements.time)
+    %{
+      metrics
+      | type =>
+          update_stats(measurements.score, metrics[type])
+          |> Map.put(:user, metadata.user)
+          |> Map.put(:track, metadata.track)
+          |> Map.put(:last_metric_at, measurements.time)
     }
   end
 
@@ -60,10 +62,10 @@ defmodule SenTweet.Bitfeels.Metrics do
 
   defp default_metrics do
     %{
-       tweets_processed: 0,
-       sum_scores: 0,
-       average_score: 0,
-       histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0]),
-     }
-   end
+      tweets_processed: 0,
+      sum_scores: 0,
+      average_score: 0,
+      histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0])
+    }
+  end
 end
