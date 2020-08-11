@@ -1,7 +1,7 @@
 defmodule SenTweet.MixProject do
   use Mix.Project
 
-  @version "1.1.13"
+  @version "1.1.15"
 
   def project do
     [
@@ -50,6 +50,7 @@ defmodule SenTweet.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.1"},
+      {:oauther, "~> 1.1"},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
     ]
