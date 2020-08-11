@@ -6,13 +6,10 @@ defmodule SenTweet.Bitfeels.Metrics do
   alias SenTweet.Bitfeels.MetricServer
   alias SenTweetWeb.MetricChannel
 
+  @tweet_types ["extended_tweet", "retweeted_status", "quoted_status", "text"]
+
   def create_metrics do
-    %{
-      tweets_processed: 0,
-      sum_scores: 0,
-      average_score: 0,
-      histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0])
-    }
+    for type <- @tweet_types, into: %{}, do: {type, default_metrics()}
   end
 
   def handle_event([:bitfeels, :pipeline, :source], _measurements, metadata) do
@@ -32,20 +29,24 @@ defmodule SenTweet.Bitfeels.Metrics do
     %{}
   end
 
-  defp calculate_metrics(metrics, measurements, metadata) do
-    tweets_processed = metrics.tweets_processed + 1
-    sum_scores = metrics.sum_scores + measurements.score
-    average_score = sum_scores / tweets_processed * 100
-    histogram = update_histogram(measurements.score, metrics.histogram)
+  defp calculate_metrics(metrics, measurements, %{tweet_type: type} = metadata) do
+    %{
+      metrics
+      | type =>
+          update_stats(measurements.score, metrics[type])
+          |> Map.put(:user, metadata.user)
+          |> Map.put(:track, metadata.track)
+          |> Map.put(:last_metric_at, measurements.time)
+    }
+  end
 
-    metrics
-    |> Map.put(:user, metadata.user)
-    |> Map.put(:track, metadata.track)
-    |> Map.put(:last_metric_at, measurements.time)
-    |> Map.put(:tweets_processed, tweets_processed)
-    |> Map.put(:sum_scores, sum_scores)
-    |> Map.put(:average_score, average_score)
-    |> Map.put(:histogram, histogram)
+  defp update_stats(score, metrics) do
+    %{
+      tweets_processed: metrics.tweets_processed + 1,
+      sum_scores: metrics.sum_scores + score,
+      average_score: 100 * (metrics.sum_scores + score) / (metrics.tweets_processed + 1),
+      histogram: update_histogram(score, metrics.histogram)
+    }
   end
 
   defp update_histogram(score, histogram) do
@@ -57,5 +58,14 @@ defmodule SenTweet.Bitfeels.Metrics do
       bin ->
         bin
     end)
+  end
+
+  defp default_metrics do
+    %{
+      tweets_processed: 0,
+      sum_scores: 0,
+      average_score: 0,
+      histogram: Enum.map(0..10, &[-1 + 2 * &1 / 11, -1 + 2 * (&1 + 1) / 11, 0])
+    }
   end
 end
