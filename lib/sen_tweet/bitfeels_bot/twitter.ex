@@ -11,7 +11,7 @@ defmodule SenTweet.BitfeelsBot.Twitter do
   delete_tweet - POST statuses/destroy/:id
   https://developer.twitter.com/en/docs/tweets/post-and-engage/api-reference/post-statuses-destroy-id
 
-  upload_image - POST media/upload
+  upload_image - POST media/upload (Image Size 5MB MAX)
   https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload
   """
 
