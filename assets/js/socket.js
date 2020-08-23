@@ -116,9 +116,9 @@ let metricChannel = socket.channel("room:metrics", {})
 
 metricChannel.on("update_metrics", metrics => {
   console.log("metrics", metrics);
-  metrics = metrics.extended_tweet; // temporary fix until new chart is developed
-  document.getElementById("tweets-processed").innerText = metrics.tweets_processed;
-  document.getElementById("average-score").innerText = metrics.average_score.toFixed(2) + " %";
+  metrics = metrics.extended_tweet.tweets; // temporary fix until new chart is developed
+  document.getElementById("tweets-processed").innerText = metrics.count;
+  document.getElementById("average-score").innerText = metrics.average.toFixed(2) + " %";
   histogram(metrics.histogram);
 });
 
