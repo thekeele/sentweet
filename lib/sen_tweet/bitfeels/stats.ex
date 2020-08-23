@@ -33,7 +33,7 @@ defmodule SenTweet.Bitfeels.Stats do
     %{
       count: stats.count + weight,
       sum: stats.sum + weight * score,
-      average: 100 * (stats.sum + weight) / (stats.count + weight),
+      average: 100 * (stats.sum + score * weight) / (stats.count + weight),
       histogram: update_histogram(stats.histogram, score, weight)
     }
   end
