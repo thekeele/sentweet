@@ -1,4 +1,8 @@
 defmodule SenTweet.Bitfeels.Stats do
+  @moduledoc """
+  Handles updates and initialization of the sentiment statistics
+  """
+
   @tweet_types [:extended_tweet, :retweeted_status, :quoted_status, :text]
   @weight_factors [:tweets, :likes, :retweets]
 
