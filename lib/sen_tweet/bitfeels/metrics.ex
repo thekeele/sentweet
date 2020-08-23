@@ -19,9 +19,7 @@ defmodule SenTweet.Bitfeels.Metrics do
       when is_float(score) do
     metadata
     |> MetricServer.get_metrics()
-    |> IO.inspect(label: "input metrics")
     |> Stats.update_all_stats(measurements, metadata)
-    |> IO.inspect(label: "calculated metrics")
     |> MetricServer.update_metrics(metadata)
     |> MetricChannel.broadcast_metrics()
   end

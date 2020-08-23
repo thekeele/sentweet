@@ -4,8 +4,7 @@ defmodule SenTweet.Bitfeels.Stats do
   @weight_factors [:tweets, :likes, :retweets]
 
   def create_stats do
-    created = for type <- @tweet_types, into: %{}, do: {type, empty_stats()}
-    IO.inspect(created, label: "Created Metrics")
+    for type <- @tweet_types, into: %{}, do: {type, empty_stats()}
   end
 
   def update_all_stats(all_stats, measurements, %{tweet_type: type} = metadata) do
@@ -14,7 +13,6 @@ defmodule SenTweet.Bitfeels.Stats do
       all_stats
       | type =>
           update_type_stats(all_stats[type], measurements.score, metadata)
-          |> IO.inspect(label: "updated stats")
           |> Map.put(:user, metadata.user)
           |> Map.put(:track, metadata.track)
           |> Map.put(:last_metric_at, measurements.time)
@@ -23,7 +21,6 @@ defmodule SenTweet.Bitfeels.Stats do
 
   defp update_type_stats(type_stats, score, metadata) do
     Enum.reduce(@weight_factors, %{}, fn factor, new_type_stats ->
-      IO.inspect({factor, new_type_stats}, label: "factor and stats")
       Map.put(new_type_stats, factor,
               update_weighted_stats(type_stats[factor], score, Map.get(metadata, factor, 1)))
     end)
