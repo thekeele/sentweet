@@ -1,5 +1,4 @@
 defmodule SenTweet.Bitfeels.Stats do
-
   @tweet_types [:extended_tweet, :retweeted_status, :quoted_status, :text]
   @weight_factors [:tweets, :likes, :retweets]
 
@@ -9,6 +8,7 @@ defmodule SenTweet.Bitfeels.Stats do
 
   def update_all_stats(all_stats, measurements, %{tweet_type: type} = metadata) do
     type = String.to_atom(type)
+
     %{
       all_stats
       | type =>
@@ -21,8 +21,11 @@ defmodule SenTweet.Bitfeels.Stats do
 
   defp update_type_stats(type_stats, score, metadata) do
     Enum.reduce(@weight_factors, %{}, fn factor, new_type_stats ->
-      Map.put(new_type_stats, factor,
-              update_weighted_stats(type_stats[factor], score, Map.get(metadata, factor, 1)))
+      Map.put(
+        new_type_stats,
+        factor,
+        update_weighted_stats(type_stats[factor], score, Map.get(metadata, factor, 1))
+      )
     end)
   end
 
@@ -51,8 +54,9 @@ defmodule SenTweet.Bitfeels.Stats do
   end
 
   defp empty_stats do
-    for factor <- @weight_factors, into: %{}, do:
-      {factor, %{count: 0, sum: 0, average: 0, histogram: empty_histogram()}}
+    for factor <- @weight_factors,
+        into: %{},
+        do: {factor, %{count: 0, sum: 0, average: 0, histogram: empty_histogram()}}
   end
 
   defp empty_histogram do
