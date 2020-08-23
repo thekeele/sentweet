@@ -11,11 +11,7 @@ defmodule SenTweet.Bitfeels.Stats do
 
     %{
       all_stats
-      | type =>
-          update_type_stats(all_stats[type], measurements.score, metadata)
-          |> Map.put(:user, metadata.user)
-          |> Map.put(:track, metadata.track)
-          |> Map.put(:last_metric_at, measurements.time)
+      | type => update_type_stats(all_stats[type], measurements.score, metadata)
     }
   end
 

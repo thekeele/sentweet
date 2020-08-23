@@ -20,6 +20,9 @@ defmodule SenTweet.Bitfeels.Metrics do
     metadata
     |> MetricServer.get_metrics()
     |> Stats.update_all_stats(measurements, metadata)
+    |> Map.put(:user, metadata.user)
+    |> Map.put(:track, metadata.track)
+    |> Map.put(:last_metric_at, measurements.time)
     |> MetricServer.update_metrics(metadata)
     |> MetricChannel.broadcast_metrics()
   end
