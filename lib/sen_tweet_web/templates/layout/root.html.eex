@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <%= csrf_meta_tag() %>
+    <!-- Plausible Analytics -->
+    <script async defer data-domain="bitfeels.keele.codes" src="https://stats.keele.codes/js/index.js"></script>
+    <!-- End Plausible Analytics -->
+
+    <!-- encoding, title -->
+    <meta charset="utf-8">
     <title>bitfeels | real-time sentiment analysis</title>
-    <%= live_title_tag assigns[:page_title] || "Hello", suffix: " · Phoenix Framework" %>
+
+    <!-- search engine metadata -->
+    <meta name="author" content="Bitfeels">
+    <meta name="keywords" content="bitcoin,crypto,sentiment,nlp,natural,language,processing,code,coding,development,elixir,phoenix,erlang">
+    <meta name="description" content="Bitfeels Real-Time Sentiment Analysis">
+
+    <!-- social media previews -->
+    <meta property="og:title" content="Bitfeels">
+    <meta property="og:image" content="<%= Routes.static_path(@conn, "/images/bitfeels_brand.png") %>">
+    <meta property="og:description" content="Bitfeels Real-Time Sentiment Analysis">
+    <meta name="twitter:title" content="Bitfeels">
+
+    <!-- mobile viewport scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <%= csrf_meta_tag() %>
+
+    <!-- style -->
     <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
   </head>
   <body>
     <section class="hero" style="background-color:#4B0082;">
