@@ -11,7 +11,7 @@ defmodule SenTweet.Bitfeels.Stats do
   end
 
   def update_all_stats(all_stats, measurements, %{tweet_type: type} = metadata) do
-    type = String.to_atom(type)
+    type = String.to_existing_atom(type)
 
     %{
       all_stats
