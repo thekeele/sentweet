@@ -45,6 +45,7 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   def handle_call({:put, stats, metadata}, _from, state) do
     stream_key = stream_key(metadata)
     current_hour = current_hour()
+
     hourly_stats =
       state[stream_key] |> get_hourly_stats(current_hour) |> Map.put(current_hour, stats)
 
@@ -67,7 +68,6 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   defp get_hourly_stats(hourly_stats, current_hour) do
     case hourly_stats do
       %{^current_hour => _} -> hourly_stats
-
       _new_hour -> Map.put(hourly_stats, current_hour, Stats.create())
     end
   end

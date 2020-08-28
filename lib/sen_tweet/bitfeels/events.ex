@@ -1,5 +1,4 @@
 defmodule SenTweet.Bitfeels.Events do
-
   alias SenTweet.Bitfeels.{Stats, HourlyStats}
 
   def handle_event([:bitfeels, :pipeline, :sentiment], %{score: score} = measurements, metadata)
