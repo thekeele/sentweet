@@ -8,7 +8,7 @@ defmodule SenTweet.Bitfeels.Metrics do
   alias SenTweetWeb.MetricChannel
 
   def create_metrics do
-    Stats.create_stats()
+    Stats.create()
   end
 
   def handle_event([:bitfeels, :pipeline, :source], _measurements, metadata) do
@@ -19,10 +19,8 @@ defmodule SenTweet.Bitfeels.Metrics do
       when is_float(score) do
     metadata
     |> MetricServer.get_metrics()
-    |> Stats.update_all_stats(measurements, metadata)
-    |> Map.put(:user, metadata.user)
-    |> Map.put(:track, metadata.track)
-    |> Map.put(:last_metric_at, measurements.time)
+    |> Stats.update_score(measurements, metadata)
+    |> Stats.update_metadata(measurements, metadata)
     |> MetricServer.update_metrics(metadata)
     |> MetricChannel.broadcast_metrics()
   end
