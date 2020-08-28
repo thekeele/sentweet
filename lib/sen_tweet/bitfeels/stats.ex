@@ -6,7 +6,7 @@ defmodule SenTweet.Bitfeels.Stats do
   @tweet_types [:extended_tweet, :retweeted_status, :quoted_status, :text]
   @weight_factors [:tweets, :likes, :retweets]
 
-  def create() do
+  def create do
     for type <- @tweet_types, into: %{}, do: {type, empty_stats()}
   end
 

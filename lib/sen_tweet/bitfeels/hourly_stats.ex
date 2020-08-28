@@ -12,7 +12,7 @@ defmodule SenTweet.Bitfeels.HourlyStats do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
-  def all() do
+  def all do
     GenServer.call(__MODULE__, :all)
   end
 
@@ -58,7 +58,7 @@ defmodule SenTweet.Bitfeels.HourlyStats do
     "#{user}_#{track}"
   end
 
-  defp current_hour() do
+  defp current_hour do
     time = Time.utc_now()
     time.hour
   end

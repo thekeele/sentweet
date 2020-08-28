@@ -1,5 +1,8 @@
 defmodule SenTweet.Bitfeels.Events do
-  alias SenTweet.Bitfeels.{Stats, HourlyStats}
+  @moduledoc """
+  Handle incoming events emitted from the bitfeels application
+  """
+  alias SenTweet.Bitfeels.{HourlyStats, Stats}
 
   def handle_event([:bitfeels, :pipeline, :sentiment], %{score: score} = measurements, metadata)
       when is_float(score) do
