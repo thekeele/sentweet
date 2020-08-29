@@ -14,7 +14,9 @@ defmodule SenTweet.Application do
       # Start bitfeels twitter stream worker
       {SenTweet.Bitfeels, []},
       # Start bitfeels metric server
-      {SenTweet.Bitfeels.MetricServer, []}
+      {SenTweet.Bitfeels.MetricServer, []},
+      # Start bitfeels hourly statistics server
+      {SenTweet.Bitfeels.HourlyStats, []}
     ]
 
     opts = [strategy: :one_for_one, name: SenTweet.Supervisor]

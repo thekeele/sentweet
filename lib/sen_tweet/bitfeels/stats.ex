@@ -6,17 +6,21 @@ defmodule SenTweet.Bitfeels.Stats do
   @tweet_types [:extended_tweet, :retweeted_status, :quoted_status, :text]
   @weight_factors [:tweets, :likes, :retweets]
 
-  def create_stats do
+  def create do
     for type <- @tweet_types, into: %{}, do: {type, empty_stats()}
   end
 
-  def update_all_stats(all_stats, measurements, %{tweet_type: type} = metadata) do
+  def update_score(stats, measurements, %{tweet_type: type} = metadata) do
     type = String.to_existing_atom(type)
 
-    %{
-      all_stats
-      | type => update_type_stats(all_stats[type], measurements.score, metadata)
-    }
+    %{stats | type => update_type_stats(stats[type], measurements.score, metadata)}
+  end
+
+  def update_metadata(stats, measurements, metadata) do
+    stats
+    |> Map.put(:user, metadata.user)
+    |> Map.put(:track, metadata.track)
+    |> Map.put(:last_metric_at, measurements.time)
   end
 
   defp update_type_stats(type_stats, score, metadata) do

@@ -1,4 +1,4 @@
-defmodule SenTweet.Metrics do
+defmodule SenTweet.Reporter do
   @moduledoc """
   Reporter module for handling individual events
 
@@ -41,6 +41,7 @@ defmodule SenTweet.Metrics do
 
   defp handle_event([:bitfeels | _] = event_name, measurements, metadata, _metrics) do
     Bitfeels.Metrics.handle_event(event_name, measurements, metadata)
+    Bitfeels.Events.handle_event(event_name, measurements, metadata)
   end
 
   defp handle_event(_event_name, _measurements, _metadata, _metrics) do

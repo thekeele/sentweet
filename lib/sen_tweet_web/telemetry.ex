@@ -22,7 +22,7 @@ defmodule SenTweetWeb.Telemetry do
       # every 10_000ms. Learn more here: https://hexdocs.pm/telemetry_metrics
       {:telemetry_poller, measurements: periodic_measurements(), period: 10_000},
       # Add reporters as children of your supervision tree.
-      {SenTweet.Metrics, metrics: metrics()}
+      {SenTweet.Reporter, metrics: metrics()}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
