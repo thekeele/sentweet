@@ -76,7 +76,9 @@ jobs:
           mix local.rebar --force
           mix local.hex --force
           mix deps.get --only prod
-          echo "Deploy assets"
+          echo "Install and deploy NPM assets"
+          source ~/.bashrc
+          npm install --prefix ./assets
           npm run deploy --prefix ./assets
           echo "Digest assets"
           MIX_ENV=prod mix phx.digest
