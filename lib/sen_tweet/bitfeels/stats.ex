@@ -3,9 +3,8 @@ defmodule SenTweet.Bitfeels.Stats do
   Handles updates and initialization of the sentiment statistics
   """
 
-  # TODO focus on one type
-  @tweet_types [:extended_tweet] #, :retweeted_status, :quoted_status, :text]
-  @weight_factors [:tweets]#, :likes, :retweets]
+  @tweet_types [:extended_tweet, :retweeted_status, :quoted_status, :text]
+  @weight_factors [:tweets, :likes, :retweets]
 
   @doc """
   Create an empty stats structure
@@ -17,8 +16,7 @@ defmodule SenTweet.Bitfeels.Stats do
   defp empty_stats do
     for factor <- @weight_factors,
         into: %{},
-        # TODO updated for testing
-        do: {factor, %{count: 10, sum: 4, average: 0, histogram: empty_histogram()}}
+        do: {factor, %{count: 0, sum: 0, average: 0, histogram: empty_histogram()}}
   end
 
   defp empty_histogram do
@@ -80,11 +78,20 @@ defmodule SenTweet.Bitfeels.Stats do
 
   @doc """
   Given a list of stats, aggregate the data into one stat
-  """
-  def aggregate() do
-    # TODO generate hourly_stats for testing
-    hourly_stats = for hour <- 0..23, into: %{}, do: {hour, create()}
 
+  Examples
+
+      iex> hourly_stats = for hour <- 0..23, into: %{}, do: {hour, SenTweet.Bitfeels.Stats.create()}
+      %{
+      ...
+      }
+
+      iex> SenTweet.Bitfeels.Stats.aggregate(hourly_stats)
+      %{
+      ...
+      }
+  """
+  def aggregate(hourly_stats) do
     hourly_stats
     |> Map.values()
     |> Enum.reduce(%{}, &aggregate_data/2)
@@ -102,13 +109,24 @@ defmodule SenTweet.Bitfeels.Stats do
     aggregated_count = left.count + right.count
     aggregated_sum = left.sum + right.sum
     aggregated_average = 100 * (aggregated_sum / aggregated_count)
+    aggregated_histogram = aggregate_histograms(left.histogram, right.histogram)
 
     %{
       count: aggregated_count,
       sum: aggregated_sum,
       average: aggregated_average,
-      # TODO sum left + right histogram
-      histogram: left.histogram
+      histogram: aggregated_histogram
     }
+  end
+
+  defp aggregate_histograms([], []), do: []
+
+  defp aggregate_histograms(
+         [[lower_bound, upper_bound, left_count] | rest_left],
+         [[_, _, right_count] | rest_right]
+       ) do
+    bin = [lower_bound, upper_bound, left_count + right_count]
+
+    [bin | aggregate_histograms(rest_left, rest_right)]
   end
 end
