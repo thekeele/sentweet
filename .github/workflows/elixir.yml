@@ -76,20 +76,9 @@ jobs:
           mix local.rebar --force
           mix local.hex --force
           mix deps.get --only prod
-          echo "Install and deploy NPM assets"
           echo "Digest assets"
           MIX_ENV=prod mix phx.digest
           echo "Build release"
           MIX_ENV=prod mix release --overwrite
-          echo "Current release version"
-          _build/prod/rel/sen_tweet/bin/sen_tweet version
-          echo "Current release PID"
-          _build/prod/rel/sen_tweet/bin/sen_tweet pid
           echo "Restart release"
-          _build/prod/rel/sen_tweet/bin/sen_tweet stop
-          sleep 5
-          _build/prod/rel/sen_tweet/bin/sen_tweet daemon_iex
-          echo "Updated release version"
-          _build/prod/rel/sen_tweet/bin/sen_tweet version
-          echo "Updated release PID"
-          _build/prod/rel/sen_tweet/bin/sen_tweet pid
+          _build/prod/rel/sen_tweet/bin/sen_tweet restart
