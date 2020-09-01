@@ -4,7 +4,11 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   """
   use GenServer
 
-  alias SenTweet.Bitfeels.Stats
+  alias SenTweet.Bitfeels.{DailyStats, Stats}
+  alias SenTweet.BitfeelsBot
+
+  # hour 0 in utc time, hour 8pm in est
+  @publish_hour 0
 
   # Client
 
@@ -37,6 +41,7 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   def handle_call({:get, metadata}, _from, state) do
     stream_key = stream_key(metadata)
     current_hour = current_hour()
+
     hourly_stats = get_hourly_stats(state[stream_key], current_hour)
 
     {:reply, hourly_stats[current_hour], %{stream_key => hourly_stats}}
@@ -47,7 +52,9 @@ defmodule SenTweet.Bitfeels.HourlyStats do
     current_hour = current_hour()
 
     hourly_stats =
-      state[stream_key] |> get_hourly_stats(current_hour) |> Map.put(current_hour, stats)
+      state[stream_key]
+      |> get_hourly_stats(current_hour)
+      |> put_hourly_stats(current_hour, stats, metadata)
 
     {:reply, hourly_stats[current_hour], %{stream_key => hourly_stats}}
   end
@@ -70,5 +77,27 @@ defmodule SenTweet.Bitfeels.HourlyStats do
       %{^current_hour => _} -> hourly_stats
       _new_hour -> Map.put(hourly_stats, current_hour, Stats.create())
     end
+  end
+
+  defp put_hourly_stats(hourly_stats, current_hour, stats, metadata) do
+    if publish?(hourly_stats, current_hour) do
+      publish_stats(hourly_stats, metadata)
+
+      Map.put(%{}, current_hour, stats)
+    else
+      Map.put(hourly_stats, current_hour, stats)
+    end
+  end
+
+  defp publish?(hourly_stats, current_hour) do
+    current_hour == @publish_hour and Enum.count(hourly_stats) > 1
+  end
+
+  defp publish_stats(hourly_stats, metadata) do
+    stats_to_publish = Stats.aggregate(hourly_stats)
+
+    :ok = DailyStats.put(stats_to_publish, metadata)
+
+    :ok = BitfeelsBot.tweet(stats_to_publish, metadata)
   end
 end

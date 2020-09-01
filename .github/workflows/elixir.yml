@@ -72,13 +72,3 @@ jobs:
           cd sentweet
           echo "Pull master"
           git pull origin master
-          echo "Get deps"
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get --only prod
-          echo "Digest assets"
-          MIX_ENV=prod mix phx.digest
-          echo "Build release"
-          MIX_ENV=prod mix release --overwrite
-          echo "Restart release"
-          _build/prod/rel/sen_tweet/bin/sen_tweet restart
