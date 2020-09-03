@@ -108,7 +108,7 @@ defmodule SenTweet.Bitfeels.Stats do
   defp aggregate_weights(_weight, left, right) do
     aggregated_count = left.count + right.count
     aggregated_sum = left.sum + right.sum
-    aggregated_average = 100 * (aggregated_sum / aggregated_count)
+    aggregated_average = average(aggregated_sum, aggregated_count)
     aggregated_histogram = aggregate_histograms(left.histogram, right.histogram)
 
     %{
@@ -118,6 +118,12 @@ defmodule SenTweet.Bitfeels.Stats do
       histogram: aggregated_histogram
     }
   end
+
+  defp average(_sum, 0),
+    do: 0
+
+  defp average(sum, count),
+    do: 100 * (sum / count)
 
   defp aggregate_histograms([], []), do: []
 

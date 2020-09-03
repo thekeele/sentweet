@@ -6,8 +6,8 @@ defmodule SenTweet.BitfeelsBot do
   def tweet(stats, metadata) do
     Logger.info("""
     #{__MODULE__}.tweet/2
-    stats: inspect(stats)
-    metadata: inspect(metadata)
+    stats: #{inspect(stats)}
+    metadata: #{inspect(metadata)}
     """)
 
     :ok

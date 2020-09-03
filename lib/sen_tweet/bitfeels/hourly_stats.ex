@@ -96,8 +96,8 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   defp publish_stats(hourly_stats, metadata) do
     stats_to_publish = Stats.aggregate(hourly_stats)
 
-    :ok = DailyStats.put(stats_to_publish, metadata)
+    DailyStats.put(stats_to_publish, metadata)
 
-    :ok = BitfeelsBot.tweet(stats_to_publish, metadata)
+    BitfeelsBot.tweet(stats_to_publish, metadata)
   end
 end
