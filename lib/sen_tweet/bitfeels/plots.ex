@@ -8,7 +8,5 @@ defmodule SenTweet.Bitfeels.Plots do
     plot_content = Contex.BarChart.new(dataset)
     plot = Contex.Plot.new(600, 400, plot_content)
     svg = Contex.Plot.to_svg(plot)
-    string = Phoenix.HTML.safe_to_string(svg)
-    Base.encode64(string, limit: :infinity)
   end
 end
