@@ -9,7 +9,6 @@ defmodule SenTweet.Bitfeels.Events do
     metadata
     |> HourlyStats.get()
     |> Stats.update_score(measurements, metadata)
-    |> Stats.update_metadata(measurements, metadata)
     |> HourlyStats.put(metadata)
   end
 
