@@ -1,0 +1,18 @@
+/* css for the main charts */
+
+.exc-tick text {
+  fill: grey;
+  font-family: "raleway";
+}
+.exc-subtitle {
+  font-family: "raleway";
+  stroke: black;
+}
+
+rect {
+  stroke: rgb(0,0,0);
+  stroke-width: 2.25;
+  opacity: 0.5;
+  rx: 20;
+  ry: 5;
+}
