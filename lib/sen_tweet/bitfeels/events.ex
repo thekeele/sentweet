@@ -4,8 +4,6 @@ defmodule SenTweet.Bitfeels.Events do
   """
   alias SenTweet.Bitfeels.{HourlyStats, Stats}
 
-  @topic "hourly:stats"
-
   def handle_event([:bitfeels, :pipeline, :sentiment], %{score: score} = measurements, metadata)
       when is_float(score) do
     metadata
@@ -22,6 +20,6 @@ defmodule SenTweet.Bitfeels.Events do
   defp broadcast_stats(last_hour_stats) do
     message = {"hourly:stats", last_hour_stats}
 
-    Phoenix.PubSub.broadcast(SenTweet.PubSub, @topic, message)
+    Phoenix.PubSub.broadcast(SenTweet.PubSub, "hourly:stats", message)
   end
 end

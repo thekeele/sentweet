@@ -9,6 +9,7 @@ defmodule SenTweetWeb.PageLive do
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(SenTweet.PubSub, "hourly:stats")
+      Phoenix.PubSub.subscribe(SenTweet.PubSub, "daily:stats")
     end
 
     metadata = %{user: "bitfeels", track: "bitcoin"}
@@ -61,6 +62,15 @@ defmodule SenTweetWeb.PageLive do
       |> Plots.create()
 
     {:noreply, assign(socket, hourly_svg: hourly_svg)}
+  end
+
+  def handle_info({"daily:stats", last_day}, socket) do
+    daily_svg =
+      last_day
+      |> get_histogram()
+      |> Plots.create()
+
+    {:noreply, assign(socket, daily_svg: daily_svg)}
   end
 
   ###
