@@ -37,7 +37,7 @@ defmodule SenTweetWeb.PageLive do
   end
 
   @impl true
-  def handle_event("daily_type_text", _params, socket) do
+  def handle_event("daily_text", _params, socket) do
     {:noreply, assign(socket, daily_type: "text")}
   end
 
