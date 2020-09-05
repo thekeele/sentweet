@@ -1,5 +1,34 @@
+
 <h1>Last Day</h1>
+
+<div class="buttons">
+  <span class="button is-success" phx-click="daily_type_text">Text</span>
+  <span class="button is-info" phx-click="daily_type_extended_tweet">Extended Tweet</span>
+  <span class="button is-danger" phx-click="daily_retweeted_status">Retweeted Status</span>
+  <span class="button is-danger" phx-click="daily_quoted_status">Quoted Status</span>
+</div>
+
+<div class="buttons">
+  <span class="button is-success" phx-click="daily_weight_tweets">Tweets</span>
+  <span class="button is-success" phx-click="daily_weight_likes">Likes</span>
+  <span class="button is-success" phx-click="daily_weight_retweets">Retweets</span>
+</div>
+
 <%= @daily_svg %>
 
 <h1>Last Hour</h1>
+
+<div class="buttons">
+  <span class="button is-success" phx-click="hourly_type_text">Text</span>
+  <span class="button is-info" phx-click="hourly_type_extended_tweet">Extended Tweet</span>
+  <span class="button is-danger" phx-click="hourly_retweeted_status">Retweeted Status</span>
+  <span class="button is-danger" phx-click="hourly_quoted_status">Quoted Status</span>
+</div>
+
+<div class="buttons">
+  <span class="button is-success" phx-click="hourly_weight_tweets">Tweets</span>
+  <span class="button is-success" phx-click="hourly_weight_likes">Likes</span>
+  <span class="button is-success" phx-click="hourly_weight_retweets">Retweets</span>
+
+</div>
 <%= @hourly_svg %>

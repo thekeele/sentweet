@@ -31,6 +31,7 @@ defmodule SenTweetWeb.PageLive do
     IO.inspect(event, label: "event")
     IO.inspect(params, label: "params")
     IO.inspect(socket, label: "socket")
+    {:noreply, socket}
   end
 
   @impl true
