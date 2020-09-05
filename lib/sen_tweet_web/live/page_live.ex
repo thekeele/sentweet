@@ -9,16 +9,21 @@ defmodule SenTweetWeb.PageLive do
 
   @impl true
   def mount(params, session, socket) do
-    IO.inspect(params, label: "params")
-    IO.inspect(session, label: "session")
-    IO.inspect(socket, label: "socket")
-    IO.inspect(connected?(socket), label: "connected")
+    if connected?(socket),
+      do: Phoenix.PubSub.subscribe(SenTweet.PubSub, @topic)
 
-    if connected?(socket), do: Phoenix.PubSub.subscribe(SenTweet.PubSub, @topic) |> IO.inspect(label: "subscribed")
+    daily_stats = SenTweet.Bitfeels.Stats.Data.daily_stats()
+    %{~D[2020-09-04] => last_day} = daily_stats
 
-    svg = Plots.create()
+    daily_histogram = last_day[:extended_tweet][:tweets][:histogram]
+    daily_svg = Plots.create(daily_histogram)
 
-    {:ok, assign(socket, svg: svg)}
+    hourly_stats = SenTweet.Bitfeels.Stats.Data.hourly_stats()
+    %{22 => last_hour} = hourly_stats
+
+    hourly_svg = hourly_svg(last_hour)
+
+    {:ok, assign(socket, daily_svg: daily_svg, hourly_svg: hourly_svg)}
   end
 
   @impl true
@@ -29,12 +34,14 @@ defmodule SenTweetWeb.PageLive do
   end
 
   @impl true
-  def handle_info({:bitfeels, stats}, socket) do
-    IO.puts "bitfeels stats"
-    IO.inspect(socket, label: "socket")
+  def handle_info({:bitfeels, last_hour}, socket) do
+    hourly_svg = hourly_svg(last_hour)
 
-    svg = Plots.create(stats)
+    {:noreply, assign(socket, hourly_svg: hourly_svg)}
+  end
 
-    {:noreply, assign(socket, svg: svg)}
+  defp hourly_svg(last_hour) do
+    hourly_histogram = last_hour[:extended_tweet][:tweets][:histogram]
+    hourly_svg = Plots.create(hourly_histogram)
   end
 end

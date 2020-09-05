@@ -19,8 +19,8 @@ defmodule SenTweet.Bitfeels.Events do
     %{}
   end
 
-  defp broadcast_stats(hourly_stats) do
-    message = {:bitfeels, hourly_stats}
+  defp broadcast_stats(last_hour_stats) do
+    message = {:bitfeels, last_hour_stats}
 
     Phoenix.PubSub.broadcast(SenTweet.PubSub, @topic, message)
   end
