@@ -3,17 +3,17 @@
 
 <div class="buttons is-level">
   <div class="container"> Tweet Type </div>
-  <span class="button is-dark is-outlined" phx-click="daily_type_text">Text</span>
-  <span class="button is-dark is-outlined" phx-click="daily_type_extended_tweet">Extended Tweet</span>
-  <span class="button is-dark is-outlined" phx-click="daily_retweeted_status">Retweeted Status</span>
-  <span class="button is-dark is-outlined" phx-click="daily_quoted_status">Quoted Status</span>
+  <span class="<%= is_selected("daily_text", @daily_type, @daily_weight) %>" phx-click="daily_text">Text</span>
+  <span class="<%= is_selected("daily_extended", @daily_type, @daily_weight) %>" phx-click="daily_extended">Extended Tweet</span>
+  <span class="<%= is_selected("daily_retweeted", @daily_type, @daily_weight) %>" phx-click="daily_retweeted">Retweeted Status</span>
+  <span class="<%= is_selected("daily_quoted", @daily_type, @daily_weight) %>" phx-click="daily_quoted">Quoted Status</span>
 </div>
 
 <div class="buttons is-level">
   <div class="container"> Weight By </div>
-  <span class="button is-dark is-outlined" phx-click="daily_weight_tweets">Tweets</span>
-  <span class="button is-dark is-outlined" phx-click="daily_weight_likes">Likes</span>
-  <span class="button is-dark is-outlined" phx-click="daily_weight_retweets">Retweets</span>
+  <span class="<%= is_selected("daily_tweets", @daily_type, @daily_weight) %>" phx-click="daily_tweets">Tweets</span>
+  <span class="<%= is_selected("daily_likes", @daily_type, @daily_weight) %>" phx-click="daily_likes">Likes</span>
+  <span class="<%= is_selected("daily_retweets", @daily_type, @daily_weight) %>" phx-click="daily_retweets">Retweets</span>
 </div>
 
 <%= @daily_svg %>
@@ -22,17 +22,17 @@
 
 <div class="buttons is-level">
   <div class="container"> Tweet Type </div>
-  <span class="button is-dark is-outlined" phx-click="hourly_type_text">Text</span>
-  <span class="button is-dark is-outlined" phx-click="hourly_type_extended_tweet">Extended Tweet</span>
-  <span class="button is-dark is-outlined" phx-click="hourly_retweeted_status">Retweeted Status</span>
-  <span class="button is-dark is-outlined" phx-click="hourly_quoted_status">Quoted Status</span>
+  <span class="<%= is_selected("hourly_text", @hourly_type, @hourly_weight) %>" phx-click="hourly_text">Text</span>
+  <span class="<%= is_selected("hourly_extended", @hourly_type, @hourly_weight) %>" phx-click="hourly_extended">Extended Tweet</span>
+  <span class="<%= is_selected("hourly_retweeted", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweeted">Retweeted Status</span>
+  <span class="<%= is_selected("hourly_quoted", @hourly_type, @hourly_weight) %>" phx-click="hourly_quoted">Quoted Status</span>
 </div>
 
 <div class="buttons is-level">
   <div class="container"> Weight By </div>
-  <span class="button is-dark is-outlined" phx-click="hourly_weight_tweets">Tweets</span>
-  <span class="button is-dark is-outlined" phx-click="hourly_weight_likes">Likes</span>
-  <span class="button is-dark is-outlined" phx-click="hourly_weight_retweets">Retweets</span>
+  <span class="<%= is_selected("hourly_tweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_tweets">Tweets</span>
+  <span class="<%= is_selected("hourly_likes", @hourly_type, @hourly_weight) %>" phx-click="hourly_likes">Likes</span>
+  <span class="<%= is_selected("hourly_retweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweets">Retweets</span>
 </div>
 
 <%= @hourly_svg %>

@@ -23,14 +23,29 @@ defmodule SenTweetWeb.PageLive do
 
     hourly_svg = hourly_svg(last_hour)
 
-    {:ok, assign(socket, daily_svg: daily_svg, hourly_svg: hourly_svg)}
+    {:ok, assign(socket, daily_svg: daily_svg, hourly_svg: hourly_svg,
+      daily_type: "text", daily_weight: "tweets",
+      hourly_type: "text", hourly_weight: "tweets")}
+  end
+
+  def is_selected(name, type, weight) do
+    case String.split(name, "_") do
+      [_, ^type] -> "button is-danger"
+      [_, ^weight] -> "button is-danger"
+      _ -> "button is-dark is-outlined"
+    end
   end
 
   @impl true
+  def handle_event("daily_type_text", _params, socket) do
+    {:noreply, assign(socket, daily_type: "text")}
+  end
+
   def handle_event(event, params, socket) do
     IO.inspect(event, label: "event")
     IO.inspect(params, label: "params")
     IO.inspect(socket, label: "socket")
+    IO.inspect(Map.keys(socket), label: "socket keyszzz")
     {:noreply, socket}
   end
 
