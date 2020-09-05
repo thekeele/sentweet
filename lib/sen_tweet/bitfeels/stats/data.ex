@@ -226,7 +226,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 72.18777217995375
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -455,7 +455,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 59.724579030647874
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -684,7 +684,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 67.17806870490313
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -913,7 +913,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 71.572030832991
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -1142,7 +1142,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 141.63039725273848
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -1371,7 +1371,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 71.51851262897253
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -1600,7 +1600,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 122.13454907387495
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -1829,7 +1829,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 117.16885562241077
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -2058,7 +2058,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 107.58114108815789
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -2287,7 +2287,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 166.33698009885848
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -2516,7 +2516,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 167.09322763048112
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -2745,7 +2745,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 139.24164873734117
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -2974,7 +2974,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 161.43283222895116
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -3203,7 +3203,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 181.22492463886738
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -3432,7 +3432,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 149.62069918215275
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -3661,7 +3661,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 124.99337463825941
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -3890,7 +3890,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 102.27359338104725
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -4119,7 +4119,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 105.90188283397583
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -4348,7 +4348,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 138.47398727200925
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       },
@@ -4577,7 +4577,7 @@ defmodule SenTweet.Bitfeels.Stats.Data do
             ],
             sum: 83.93047367036343
           }
-        },
+        }
         # track: "bitcoin",
         # user: "bitfeels"
       }

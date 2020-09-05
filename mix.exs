@@ -52,7 +52,8 @@ defmodule SenTweet.MixProject do
       {:plug_cowboy, "~> 2.1"},
       {:oauther, "~> 1.1"},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
+      {:contex, "~> 0.3.0"}
     ]
   end
 
