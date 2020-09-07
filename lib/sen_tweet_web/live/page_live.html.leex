@@ -1,38 +1,151 @@
 
-<h1>Last Day</h1>
+<section class="hero is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title is-1 is-spaced has-text-centered">
+        Hourly Stats
+      </h1>
 
-<div class="buttons is-level">
-  <div class="container"> Tweet Type </div>
-  <span class="<%= is_selected("daily_text", @daily_type, @daily_weight) %>" phx-click="daily_text">Text</span>
-  <span class="<%= is_selected("daily_extended", @daily_type, @daily_weight) %>" phx-click="daily_extended">Extended Tweet</span>
-  <span class="<%= is_selected("daily_retweeted", @daily_type, @daily_weight) %>" phx-click="daily_retweeted">Retweeted Status</span>
-  <span class="<%= is_selected("daily_quoted", @daily_type, @daily_weight) %>" phx-click="daily_quoted">Quoted Status</span>
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Stream</p>
+            <p class="title">Bitcoin</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Hour</p>
+            <p class="title">3</p>
+          </div>
+        </div>
+      </nav>
+
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Tweets</p>
+            <p class="title">3,456</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Likes</p>
+            <p class="title">789</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Retweets</p>
+            <p class="title">456K</p>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<div class="columns">
+  <div class="column is-two-thirds">
+    <%= @hourly_svg %>
+  </div>
+
+  <div class="column">
+    <div class="box">
+      <h1 class="title has-text-centered">Tweet Type</h1>
+      <div class="buttons are-large">
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_text", @hourly_type, @hourly_weight) %>" phx-click="hourly_text">Text</button>
+
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_extended", @hourly_type, @hourly_weight) %>" phx-click="hourly_extended">Extended Tweet</button>
+
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_retweeted", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweeted">Retweeted Status</button>
+
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_quoted", @hourly_type, @hourly_weight) %>" phx-click="hourly_quoted">Quoted Status</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h1 class="title has-text-centered">Weight By</h1>
+      <div class="buttons are-large">
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_tweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_tweets">Tweets</button>
+
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_likes", @hourly_type, @hourly_weight) %>" phx-click="hourly_likes">Likes</button>
+
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_retweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweets">Retweets</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="buttons is-level">
-  <div class="container"> Weight By </div>
-  <span class="<%= is_selected("daily_tweets", @daily_type, @daily_weight) %>" phx-click="daily_tweets">Tweets</span>
-  <span class="<%= is_selected("daily_likes", @daily_type, @daily_weight) %>" phx-click="daily_likes">Likes</span>
-  <span class="<%= is_selected("daily_retweets", @daily_type, @daily_weight) %>" phx-click="daily_retweets">Retweets</span>
+<section class="hero is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title is-1 is-spaced has-text-centered">
+        Daily Stats
+      </h1>
+
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Stream</p>
+            <p class="title">Bitcoin</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Date</p>
+            <p class="title">2020-09-06</p>
+          </div>
+        </div>
+      </nav>
+
+      <nav class="level">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Tweets</p>
+            <p class="title">3,456</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Likes</p>
+            <p class="title">789</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Retweets</p>
+            <p class="title">456K</p>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<div class="columns">
+  <div class="column is-two-thirds">
+    <%= @daily_svg %>
+  </div>
+
+  <div class="column">
+    <div class="box">
+      <h1 class="title has-text-centered">Tweet Type</h1>
+      <div class="buttons are-large">
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("daily_text", @daily_type, @daily_weight) %>" phx-click="daily_text">Text</button><br />
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("daily_extended", @daily_type, @daily_weight) %>" phx-click="daily_extended">Extended Tweet</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("daily_retweeted", @daily_type, @daily_weight) %>" phx-click="daily_retweeted">Retweeted Status</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("daily_quoted", @daily_type, @daily_weight) %>" phx-click="daily_quoted">Quoted Status</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h1 class="title has-text-centered">Weight By</h1>
+      <div class="buttons are-large">
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("daily_tweets", @daily_type, @daily_weight) %>" phx-click="daily_tweets">Tweets</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("daily_likes", @daily_type, @daily_weight) %>" phx-click="daily_likes">Likes</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("daily_retweets", @daily_type, @daily_weight) %>" phx-click="daily_retweets">Retweets</button>
+      </div>
+    </div>
+  </div>
 </div>
-
-<%= @daily_svg %>
-
-<h1>Last Hour</h1>
-
-<div class="buttons is-level">
-  <div class="container"> Tweet Type </div>
-  <span class="<%= is_selected("hourly_text", @hourly_type, @hourly_weight) %>" phx-click="hourly_text">Text</span>
-  <span class="<%= is_selected("hourly_extended", @hourly_type, @hourly_weight) %>" phx-click="hourly_extended">Extended Tweet</span>
-  <span class="<%= is_selected("hourly_retweeted", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweeted">Retweeted Status</span>
-  <span class="<%= is_selected("hourly_quoted", @hourly_type, @hourly_weight) %>" phx-click="hourly_quoted">Quoted Status</span>
-</div>
-
-<div class="buttons is-level">
-  <div class="container"> Weight By </div>
-  <span class="<%= is_selected("hourly_tweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_tweets">Tweets</span>
-  <span class="<%= is_selected("hourly_likes", @hourly_type, @hourly_weight) %>" phx-click="hourly_likes">Likes</span>
-  <span class="<%= is_selected("hourly_retweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweets">Retweets</span>
-</div>
-
-<%= @hourly_svg %>
