@@ -3,7 +3,7 @@ defmodule SenTweetWeb.PageLive do
 
   use SenTweetWeb, :live_view
 
-  alias SenTweet.Bitfeels.{DailyStats, HourlyStats, Plots}
+  alias SenTweet.Bitfeels.{DailyStats, HourlyStats, Plots, Stats}
 
   @type_events ["text", "extended", "retweeted", "quoted"]
   @weight_events ["tweets", "likes", "retweets"]
@@ -108,6 +108,10 @@ defmodule SenTweetWeb.PageLive do
     stats |> get_histogram(filter) |> Plots.create()
   end
 
+  defp get_histogram([], filter) do
+    get_histogram(Stats.create(), filter)
+  end
+
   defp get_histogram(stats, %{type: type, weight: weight}) do
     tweet_type = @event_type_tweet_type[type]
     weight_factor = String.to_existing_atom(weight)
@@ -117,9 +121,9 @@ defmodule SenTweetWeb.PageLive do
 
   def is_selected(name, type, weight) do
     case String.split(name, "_") do
-      [_, ^type] -> "button is-danger"
-      [_, ^weight] -> "button is-danger"
-      _ -> "button is-dark is-outlined"
+      [_, ^type] -> "is-focused"
+      [_, ^weight] -> "is-focused"
+      _ -> ""
     end
   end
 end
