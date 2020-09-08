@@ -6,8 +6,9 @@ defmodule SenTweet.Bitfeels.Events do
 
   def handle_event([:bitfeels, :pipeline, :sentiment], %{score: score} = measurements, metadata)
       when is_float(score) do
-    metadata
-    |> HourlyStats.get()
+    {_current_hour, stats} = HourlyStats.get(metadata)
+
+    stats
     |> Stats.update_score(measurements, metadata)
     |> HourlyStats.put(metadata)
     |> broadcast_stats()

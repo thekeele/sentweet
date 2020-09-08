@@ -16,10 +16,31 @@ defmodule SenTweet.Bitfeels.HourlyStats do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
+  @doc """
+  Get all stats
+
+  Examples
+
+      iex> SenTweet.Bitfeels.HourlyStats.all()
+      %{
+      ...
+      }
+  """
   def all do
     GenServer.call(__MODULE__, :all)
   end
 
+  @doc """
+  Get the stats for the current hour for a given stream
+
+  Examples
+
+      iex> metadata = %{user: "bitfeels", track: "bitcoin"}
+      %{track: "bitcoin", user: "bitfeels"}
+
+      iex> SenTweet.Bitfeels.HourlyStats.get(metadata)
+      {12, %{score: 0.5}}
+  """
   def get(metadata) do
     GenServer.call(__MODULE__, {:get, metadata})
   end
@@ -41,10 +62,9 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   def handle_call({:get, metadata}, _from, state) do
     stream_key = stream_key(metadata)
     current_hour = current_hour()
-
     hourly_stats = get_hourly_stats(state[stream_key], current_hour)
 
-    {:reply, hourly_stats[current_hour], %{stream_key => hourly_stats}}
+    {:reply, {current_hour, hourly_stats[current_hour]}, %{stream_key => hourly_stats}}
   end
 
   def handle_call({:put, stats, metadata}, _from, state) do
