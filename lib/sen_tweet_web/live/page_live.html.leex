@@ -1,4 +1,3 @@
-
 <section class="hero is-light">
   <div class="hero-body">
     <div class="container">
@@ -10,13 +9,13 @@
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Stream</p>
-            <p class="title">Bitcoin</p>
+            <p class="title"><%= String.upcase(@stream.track) %></p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Hour</p>
-            <p class="title">3</p>
+            <p class="title"><%= @hourly.current_hour %> UTC</p>
           </div>
         </div>
       </nav>
@@ -25,19 +24,25 @@
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Tweets</p>
-            <p class="title">3,456</p>
+            <p class="title"><%= get_weight(@hourly, :tweets, :count) %></p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Average</p>
+            <p class="title"><%= Float.round(get_weight(@hourly, :tweets, :average), 2) %>%</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Likes</p>
-            <p class="title">789</p>
+            <p class="title"><%= get_weight(@hourly, :likes, :count) %></p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">Retweets</p>
-            <p class="title">456K</p>
+            <p class="title"><%= get_weight(@hourly, :retweets, :count) %></p>
           </div>
         </div>
       </nav>
@@ -47,31 +52,31 @@
 
 <div class="columns">
   <div class="column is-two-thirds">
-    <%= @hourly_svg %>
+    <%= @hourly.svg %>
   </div>
 
   <div class="column">
     <div class="box">
       <h1 class="title has-text-centered">Tweet Type</h1>
       <div class="buttons are-large">
-        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_text", @hourly_type, @hourly_weight) %>" phx-click="hourly_text">Text</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_text", @hourly.filter.type, @hourly.filter.weight) %>" phx-click="hourly_text">Text</button>
 
-        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_extended", @hourly_type, @hourly_weight) %>" phx-click="hourly_extended">Extended Tweet</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_extended", @hourly.filter.type, @hourly.filter.weight) %>" phx-click="hourly_extended">Extended Tweet</button>
 
-        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_retweeted", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweeted">Retweeted Status</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_retweeted", @hourly.filter.type, @hourly.filter.weight) %>" phx-click="hourly_retweeted">Retweeted Status</button>
 
-        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_quoted", @hourly_type, @hourly_weight) %>" phx-click="hourly_quoted">Quoted Status</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_quoted", @hourly.filter.type, @hourly.filter.weight) %>" phx-click="hourly_quoted">Quoted Status</button>
       </div>
     </div>
 
     <div class="box">
       <h1 class="title has-text-centered">Weight By</h1>
       <div class="buttons are-large">
-        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_tweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_tweets">Tweets</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_tweets", @hourly.filter.type, @hourly.filter.weight) %>" phx-click="hourly_tweets">Tweets</button>
 
-        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_likes", @hourly_type, @hourly_weight) %>" phx-click="hourly_likes">Likes</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_likes", @hourly.filter.type, @hourly.filter.weight) %>" phx-click="hourly_likes">Likes</button>
 
-        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_retweets", @hourly_type, @hourly_weight) %>" phx-click="hourly_retweets">Retweets</button>
+        <button class="button is-light is-fullwidth is-outlined <%= is_selected("hourly_retweets", @hourly.filter.type, @hourly.filter.weight) %>" phx-click="hourly_retweets">Retweets</button>
       </div>
     </div>
   </div>

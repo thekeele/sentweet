@@ -24,17 +24,22 @@ defmodule SenTweetWeb.PageLive do
     stream = %{user: "bitfeels", track: "bitcoin"}
     filter = %{type: "text", weight: "tweets"}
 
+    {current_hour, hourly_stats} = HourlyStats.get(stream)
+    hourly_svg = create_svg(hourly_stats, filter)
+
     daily_svg = daily_svg(stream, filter)
-    hourly_svg = hourly_svg(stream, filter)
 
     assigns = [
       stream: stream,
+      hourly: %{
+        current_hour: current_hour,
+        stats: hourly_stats,
+        svg: hourly_svg,
+        filter: filter
+      },
       daily_svg: daily_svg,
       daily_type: filter.type,
-      daily_weight: filter.weight,
-      hourly_svg: hourly_svg,
-      hourly_type: filter.type,
-      hourly_weight: filter.weight
+      daily_weight: filter.weight
     ]
 
     {:ok, assign(socket, assigns)}
@@ -45,6 +50,18 @@ defmodule SenTweetWeb.PageLive do
   ###
 
   @impl true
+  def handle_event("hourly_" <> event, _params, socket) when event in @type_events do
+    hourly = socket.assigns.hourly |> add_event([:filter, :type], event) |> update_svg()
+
+    {:noreply, assign(socket, hourly: hourly)}
+  end
+
+  def handle_event("hourly_" <> event, _params, socket) when event in @weight_events do
+    hourly = socket.assigns.hourly |> add_event([:filter, :weight], event) |> update_svg()
+
+    {:noreply, assign(socket, hourly: hourly)}
+  end
+
   def handle_event("daily_" <> event, _params, socket) when event in @type_events do
     filter = %{type: event, weight: socket.assigns.daily_weight}
     daily_svg = daily_svg(socket.stream, filter)
@@ -59,30 +76,15 @@ defmodule SenTweetWeb.PageLive do
     {:noreply, assign(socket, daily_svg: daily_svg, daily_weight: event)}
   end
 
-  def handle_event("hourly_" <> event, _params, socket) when event in @type_events do
-    filter = %{type: event, weight: socket.assigns.hourly_weight}
-    hourly_svg = hourly_svg(socket.stream, filter)
-
-    {:noreply, assign(socket, hourly_svg: hourly_svg, hourly_type: event)}
-  end
-
-  def handle_event("hourly_" <> event, _params, socket) when event in @weight_events do
-    filter = %{type: socket.assigns.hourly_type, weight: event}
-    hourly_svg = hourly_svg(socket.stream, filter)
-
-    {:noreply, assign(socket, hourly_svg: hourly_svg, hourly_weight: event)}
-  end
-
   ###
   # Broadcast Callbacks
   ###
 
   @impl true
   def handle_info({"hourly:stats", last_hour}, socket) do
-    filter = %{type: socket.assigns.hourly_type, weight: socket.assigns.hourly_weight}
-    hourly_svg = create_svg(last_hour, filter)
+    hourly = socket.assigns.hourly |> add_event([:stats], last_hour) |> update_svg()
 
-    {:noreply, assign(socket, hourly_svg: hourly_svg)}
+    {:noreply, assign(socket, hourly: hourly)}
   end
 
   def handle_info({"daily:stats", last_day}, socket) do
@@ -100,8 +102,12 @@ defmodule SenTweetWeb.PageLive do
     stream |> DailyStats.get() |> create_svg(filter)
   end
 
-  defp hourly_svg(stream, filter) do
-    stream |> HourlyStats.get() |> create_svg(filter)
+  defp add_event(data, keys, event) do
+    put_in(data, keys, event)
+  end
+
+  defp update_svg(data) do
+    Map.put(data, :svg, create_svg(data.stats, data.filter))
   end
 
   defp create_svg(stats, filter) do
@@ -117,6 +123,12 @@ defmodule SenTweetWeb.PageLive do
     weight_factor = String.to_existing_atom(weight)
 
     stats[tweet_type][weight_factor][:histogram]
+  end
+
+  defp get_weight(data, weight, key) do
+    tweet_type = @event_type_tweet_type[data.filter.type]
+
+    data.stats[tweet_type][weight][key] || 0
   end
 
   def is_selected(name, type, weight) do
