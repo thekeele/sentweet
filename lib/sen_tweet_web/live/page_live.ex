@@ -81,8 +81,12 @@ defmodule SenTweetWeb.PageLive do
   ###
 
   @impl true
-  def handle_info({"hourly:stats", last_hour}, socket) do
-    hourly = socket.assigns.hourly |> add_event([:stats], last_hour) |> update_svg()
+  def handle_info({"hourly:stats", current_hour, last_hour_stats}, socket) do
+    hourly =
+      socket.assigns.hourly
+      |> add_event([:current_hour], current_hour)
+      |> add_event([:stats], last_hour_stats)
+      |> update_svg()
 
     {:noreply, assign(socket, hourly: hourly)}
   end
@@ -130,6 +134,12 @@ defmodule SenTweetWeb.PageLive do
 
     data.stats[tweet_type][weight][key] || 0
   end
+
+  defp round_up(value) when is_float(value) do
+    Float.round(value, 2)
+  end
+
+  defp round_up(_), do: 0
 
   def is_selected(name, type, weight) do
     case String.split(name, "_") do

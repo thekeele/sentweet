@@ -76,7 +76,7 @@ defmodule SenTweet.Bitfeels.HourlyStats do
       |> get_hourly_stats(current_hour)
       |> put_hourly_stats(current_hour, stats, metadata)
 
-    {:reply, hourly_stats[current_hour], %{stream_key => hourly_stats}}
+    {:reply, {current_hour, hourly_stats[current_hour]}, %{stream_key => hourly_stats}}
   end
 
   # Helper functions
