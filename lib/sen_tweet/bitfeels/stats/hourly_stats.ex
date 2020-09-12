@@ -7,8 +7,8 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   alias SenTweet.Bitfeels.{DailyStats, Stats}
   alias SenTweet.BitfeelsBot
 
-  # hour 2 in utc time, hour 10pm in est
-  @publish_hour 2
+  # hour 0 in utc time, hour 8pm in est
+  @publish_hour 0
 
   # Client
 
