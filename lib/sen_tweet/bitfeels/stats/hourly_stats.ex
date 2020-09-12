@@ -7,8 +7,8 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   alias SenTweet.Bitfeels.{DailyStats, Stats}
   alias SenTweet.BitfeelsBot
 
-  # hour 2 in utc time, hour 10pm in est
-  @publish_hour 2
+  # hour 0 in utc time, hour 8pm in est
+  @publish_hour 0
 
   # Client
 
@@ -16,10 +16,31 @@ defmodule SenTweet.Bitfeels.HourlyStats do
     GenServer.start_link(__MODULE__, opts, name: __MODULE__)
   end
 
+  @doc """
+  Get all stats
+
+  Examples
+
+      iex> SenTweet.Bitfeels.HourlyStats.all()
+      %{
+      ...
+      }
+  """
   def all do
     GenServer.call(__MODULE__, :all)
   end
 
+  @doc """
+  Get the stats for the current hour for a given stream
+
+  Examples
+
+      iex> metadata = %{user: "bitfeels", track: "bitcoin"}
+      %{track: "bitcoin", user: "bitfeels"}
+
+      iex> SenTweet.Bitfeels.HourlyStats.get(metadata)
+      {12, %{score: 0.5}}
+  """
   def get(metadata) do
     GenServer.call(__MODULE__, {:get, metadata})
   end
@@ -41,10 +62,9 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   def handle_call({:get, metadata}, _from, state) do
     stream_key = stream_key(metadata)
     current_hour = current_hour()
-
     hourly_stats = get_hourly_stats(state[stream_key], current_hour)
 
-    {:reply, hourly_stats[current_hour], %{stream_key => hourly_stats}}
+    {:reply, {current_hour, hourly_stats[current_hour]}, %{stream_key => hourly_stats}}
   end
 
   def handle_call({:put, stats, metadata}, _from, state) do
@@ -56,7 +76,7 @@ defmodule SenTweet.Bitfeels.HourlyStats do
       |> get_hourly_stats(current_hour)
       |> put_hourly_stats(current_hour, stats, metadata)
 
-    {:reply, hourly_stats[current_hour], %{stream_key => hourly_stats}}
+    {:reply, {current_hour, hourly_stats[current_hour]}, %{stream_key => hourly_stats}}
   end
 
   # Helper functions
@@ -94,10 +114,13 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   end
 
   defp publish_stats(hourly_stats, metadata) do
-    stats_to_publish = Stats.aggregate(hourly_stats)
+    last_day_stats = Stats.aggregate(hourly_stats)
 
-    DailyStats.put(stats_to_publish, metadata)
+    message = {"daily:stats", Date.utc_today(), last_day_stats}
+    Phoenix.PubSub.broadcast(SenTweet.PubSub, "daily:stats", message)
 
-    BitfeelsBot.tweet(stats_to_publish, metadata)
+    DailyStats.put(last_day_stats, metadata)
+
+    BitfeelsBot.tweet(last_day_stats, metadata)
   end
 end

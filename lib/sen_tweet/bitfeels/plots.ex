@@ -1,14 +1,40 @@
 defmodule SenTweet.Bitfeels.Plots do
-  alias SenTweet.Bitfeels.Stats
+  alias Contex.{Dataset, BarChart, Plot}
 
-  def create(stats \\ Stats.create()) do
-    hist = stats[:text][:likes][:histogram]
-    data = Enum.map(hist, fn [l, r, c] -> [(l + r) / 2, c] end)
-    dataset = Contex.Dataset.new(data)
-    plot_content = Contex.BarChart.new(dataset)
-    plot = Contex.Plot.new(600, 400, plot_content)
-    svg = Contex.Plot.to_svg(plot)
-    string = Phoenix.HTML.safe_to_string(svg)
-    Base.encode64(string, limit: :infinity)
+  @colors ["63595c"]
+  @tick_precision 2
+
+  def create(histogram) do
+    histogram
+    |> merge_bin_edges()
+    |> Dataset.new()
+    |> BarChart.new()
+    |> BarChart.colours(@colors)
+    |> BarChart.data_labels(false)
+    |> BarChart.padding(4)
+    |> create_canvas()
+    |> Plot.axis_labels("Sentiment", "Frequency")
+    |> Plot.to_svg()
+  end
+
+  defp format_edge(float) do
+    float
+    |> Float.round(@tick_precision)
+    |> Float.to_string()
+  end
+
+  defp format_tick_label(left, right) do
+    Enum.map([left, right], &format_edge/1)
+    |> Enum.join(" to ")
+  end
+
+  defp merge_bin_edges(histogram) do
+    Enum.map(histogram, fn [left, right, count] ->
+      [format_tick_label(left, right), count]
+    end)
+  end
+
+  defp create_canvas(plot_content) do
+    Plot.new(600, 400, plot_content)
   end
 end

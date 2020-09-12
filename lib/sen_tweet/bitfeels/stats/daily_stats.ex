@@ -13,8 +13,29 @@ defmodule SenTweet.Bitfeels.DailyStats do
   end
 
   @doc """
+  Gets daily stats with dates
+  Accepts a start_date and end_date filter to all a range of data
+
+  Examples
+
+      iex> metadata = %{user: "bitfeels", track: "bitcoin"}
+      %{track: "bitcoin", user: "bitfeels"}
+
+      iex> SenTweet.Bitfeels.DailyStats.all(metadata)
+      %{~D[2020-08-29] => %{score: 0.5}}
+
+      iex> filter = %{start_date: Date.add(Date.utc_today(), -5), end_date: Date.utc_today()}
+      %{end_date: ~D[2020-09-03], start_date: ~D[2020-08-29]}
+
+      iex> SenTweet.Bitfeels.DailyStats.all(filter, metadata)
+      %{~D[2020-08-29] => %{score: 0.5}, ~D[2020-08-30] => %{score: 0.75}}
+  """
+  def all(filter, metadata) do
+    GenServer.call(__MODULE__, {:all, filter, metadata})
+  end
+
+  @doc """
   Get the stats for the current day for a given stream
-  Accepts a start_date and end_date filter to get a range of data
 
   Examples
 
@@ -22,16 +43,10 @@ defmodule SenTweet.Bitfeels.DailyStats do
       %{track: "bitcoin", user: "bitfeels"}
 
       iex> SenTweet.Bitfeels.DailyStats.get(metadata)
-      %{~D[2020-08-29] => %{score: 0.5}}
-
-      iex> filter = %{start_date: Date.utc_today(), end_date: Date.add(Date.utc_today(), 5)}
-      %{end_date: ~D[2020-09-03], start_date: ~D[2020-08-29]}
-
-      iex> SenTweet.Bitfeels.DailyStats.get(filter, metadata)
-      %{~D[2020-08-29] => %{score: 0.5}, ~D[2020-08-30] => %{score: 0.75}}
+      %{score: 0.5}
   """
-  def get(filter \\ %{}, metadata) do
-    GenServer.call(__MODULE__, {:get, filter, metadata})
+  def get(metadata) do
+    GenServer.call(__MODULE__, {:get, metadata})
   end
 
   @doc """
@@ -60,7 +75,7 @@ defmodule SenTweet.Bitfeels.DailyStats do
     {:ok, %{tab: tab}}
   end
 
-  def handle_call({:get, filter, metadata}, _from, state) do
+  def handle_call({:all, filter, metadata}, _from, state) do
     stream_key = stream_key(metadata)
 
     daily_stats =
@@ -70,6 +85,17 @@ defmodule SenTweet.Bitfeels.DailyStats do
       |> Enum.into(%{})
 
     {:reply, daily_stats, state}
+  end
+
+  def handle_call({:get, metadata}, _from, state) do
+    stream_key = stream_key(metadata)
+
+    stats =
+      state.tab
+      |> get_days(stream_key)
+      |> filter_days()
+
+    {:reply, {Date.utc_today(), stats}, state}
   end
 
   def handle_cast({:put, stats, metadata}, state) do
@@ -97,7 +123,7 @@ defmodule SenTweet.Bitfeels.DailyStats do
     end
   end
 
-  defp filter_days(days, filter) do
+  defp filter_days(days, filter \\ %{}) do
     Enum.filter(days, fn {day, _stats} -> in_data_range?(day, filter) end)
   end
 
