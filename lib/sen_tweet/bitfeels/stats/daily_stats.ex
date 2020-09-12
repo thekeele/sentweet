@@ -90,12 +90,12 @@ defmodule SenTweet.Bitfeels.DailyStats do
   def handle_call({:get, metadata}, _from, state) do
     stream_key = stream_key(metadata)
 
-    stats =
+    [{day, stats}] =
       state.tab
       |> get_days(stream_key)
       |> filter_days()
 
-    {:reply, {Date.utc_today(), stats}, state}
+    {:reply, {day, stats}, state}
   end
 
   def handle_cast({:put, stats, metadata}, state) do

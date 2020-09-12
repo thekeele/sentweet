@@ -1,7 +1,7 @@
 defmodule SenTweet.MixProject do
   use Mix.Project
 
-  @version "1.1.22"
+  @version "1.1.23"
 
   def project do
     [
