@@ -21,7 +21,12 @@ defmodule SenTweetWeb.StatsLive do
       Phoenix.PubSub.subscribe(SenTweet.PubSub, "daily:stats")
     end
 
-    stream = %{user: "bitfeels", track: "bitcoin"}
+    assigns = Enum.map(Bitfeels.all_streams(), &mount_stream/1) |> IO.inspect
+    {:ok, assign(socket, [streams: assigns])}
+  end
+
+  defp mount_stream(%{user: user, track: track} = stream) do
+
     filter = %{type: "text", weight: "tweets"}
 
     {current_hour, hourly_stats} = HourlyStats.get(stream)
@@ -30,7 +35,7 @@ defmodule SenTweetWeb.StatsLive do
     {current_day, daily_stats} = DailyStats.get(stream)
     daily_svg = create_svg(daily_stats, filter)
 
-    assigns = [
+    %{
       stream: stream,
       hourly: %{
         current_hour: current_hour,
@@ -44,9 +49,7 @@ defmodule SenTweetWeb.StatsLive do
         svg: daily_svg,
         filter: filter
       }
-    ]
-
-    {:ok, assign(socket, assigns)}
+    }
   end
 
   ###
