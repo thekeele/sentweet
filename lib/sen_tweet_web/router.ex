@@ -21,8 +21,7 @@ defmodule SenTweetWeb.Router do
   scope "/", SenTweetWeb do
     pipe_through(:browser)
 
-    get("/", PageController, :index)
-    live("/live", PageLive, :index)
+    live("/", StatsLive, :index)
   end
 
   scope "/admin", SenTweetWeb do

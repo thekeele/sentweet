@@ -3,7 +3,6 @@ defmodule SenTweetWeb.UserSocket do
 
   ## Channels
   channel("room:tweets", SenTweetWeb.TweetChannel)
-  channel("room:metrics", SenTweetWeb.MetricChannel)
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
