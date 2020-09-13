@@ -7,7 +7,6 @@
 // Pass the token on params as below. Or remove it
 // from the params if you are not using authentication.
 import {Socket} from "phoenix"
-import { histogram } from "./charts"
 
 let socket = new Socket("/socket", {params: {token: window.userToken}})
 
@@ -108,22 +107,5 @@ tweetChannel.on("new_tweet", sentweet => {
 tweetChannel.join()
   .receive("ok", resp => { console.log("Joined tweetChannel", resp) })
   .receive("error", resp => { console.log("Unable to join tweetChannel", resp) })
-
-//
-// use socket to join metric channel and update metrics
-//
-let metricChannel = socket.channel("room:metrics", {})
-
-metricChannel.on("update_metrics", metrics => {
-  console.log("metrics", metrics);
-  metrics = metrics.retweeted_status.tweets; // temporary fix until new chart is developed
-  document.getElementById("tweets-processed").innerText = metrics.count;
-  document.getElementById("average-score").innerText = metrics.average.toFixed(2) + " %";
-  histogram(metrics.histogram);
-});
-
-metricChannel.join()
-  .receive("ok", resp => { console.log("Joined metricChannel", resp) })
-  .receive("error", resp => { console.log("Unable to join metricChannel", resp) })
 
 export default socket
