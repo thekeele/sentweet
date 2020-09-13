@@ -40,7 +40,6 @@ defmodule SenTweet.Reporter do
   end
 
   defp handle_event([:bitfeels | _] = event_name, measurements, metadata, _metrics) do
-    Bitfeels.Metrics.handle_event(event_name, measurements, metadata)
     Bitfeels.Events.handle_event(event_name, measurements, metadata)
   end
 

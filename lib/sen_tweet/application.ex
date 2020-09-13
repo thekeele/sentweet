@@ -13,8 +13,6 @@ defmodule SenTweet.Application do
       SenTweetWeb.Endpoint,
       # Start bitfeels twitter stream worker
       {SenTweet.Bitfeels, []},
-      # Start bitfeels metric server
-      {SenTweet.Bitfeels.MetricServer, []},
       # Start bitfeels daily statistics server
       {SenTweet.Bitfeels.DailyStats, []},
       # Start bitfeels hourly statistics server
