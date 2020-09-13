@@ -4,6 +4,8 @@ defmodule SenTweet.Bitfeels.DailyStats do
   """
   use GenServer
 
+  alias SenTweet.Bitfeels.Stats
+
   @number_days_to_store 30
 
   # Client
@@ -90,10 +92,17 @@ defmodule SenTweet.Bitfeels.DailyStats do
   def handle_call({:get, metadata}, _from, state) do
     stream_key = stream_key(metadata)
 
-    [{day, stats}] =
+    {day, stats} =
       state.tab
       |> get_days(stream_key)
       |> filter_days()
+      |> case do
+        [] ->
+          {Date.utc_today(), Stats.create()}
+
+        [{day, stats}] ->
+          {day, stats}
+      end
 
     {:reply, {day, stats}, state}
   end
