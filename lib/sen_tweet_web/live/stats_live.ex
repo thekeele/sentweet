@@ -21,12 +21,12 @@ defmodule SenTweetWeb.StatsLive do
       Phoenix.PubSub.subscribe(SenTweet.PubSub, "daily:stats")
     end
 
-    assigns = Enum.map(Bitfeels.all_streams(), &mount_stream/1) |> IO.inspect
-    {:ok, assign(socket, [streams: assigns])}
+    assigns = Enum.map(Bitfeels.all_streams(), &mount_stream/1)
+
+    {:ok, assign(socket, streams: assigns)}
   end
 
-  defp mount_stream(%{user: user, track: track} = stream) do
-
+  defp mount_stream(stream) do
     filter = %{type: "text", weight: "tweets"}
 
     {current_hour, hourly_stats} = HourlyStats.get(stream)
@@ -86,7 +86,7 @@ defmodule SenTweetWeb.StatsLive do
   ###
 
   @impl true
-  def handle_info({"hourly:stats", current_hour, last_hour_stats}, socket) do
+  def handle_info({"hourly:stats", _stream, current_hour, last_hour_stats}, socket) do
     hourly =
       socket.assigns.hourly
       |> add_event([:current_hour], current_hour)
@@ -96,7 +96,7 @@ defmodule SenTweetWeb.StatsLive do
     {:noreply, assign(socket, hourly: hourly)}
   end
 
-  def handle_info({"daily:stats", current_day, last_day_stats}, socket) do
+  def handle_info({"daily:stats", _stream, current_day, last_day_stats}, socket) do
     daily =
       socket.assigns.daily
       |> add_event([:current_day], current_day)

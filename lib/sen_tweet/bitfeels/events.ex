@@ -11,15 +11,15 @@ defmodule SenTweet.Bitfeels.Events do
     stats
     |> Stats.update_score(measurements, metadata)
     |> HourlyStats.put(metadata)
-    |> broadcast_stats()
+    |> broadcast_stats(metadata)
   end
 
   def handle_event(_event, _measurements, _metadata) do
     %{}
   end
 
-  defp broadcast_stats({current_hour, last_hour_stats}) do
-    message = {"hourly:stats", current_hour, last_hour_stats}
+  defp broadcast_stats({current_hour, last_hour_stats}, metadata) do
+    message = {"hourly:stats", metadata, current_hour, last_hour_stats}
 
     Phoenix.PubSub.broadcast(SenTweet.PubSub, "hourly:stats", message)
   end
