@@ -3,7 +3,7 @@ defmodule SenTweetWeb.StatsLive do
 
   use SenTweetWeb, :live_view
 
-  alias SenTweet.Bitfeels.{DailyStats, HourlyStats, Plots, Stats}
+  alias SenTweet.Bitfeels.{HourlyStats, Plots, Stats}
 
   @type_events ["text", "extended", "retweeted", "quoted"]
   @weight_events ["tweets", "likes", "retweets"]
@@ -18,7 +18,6 @@ defmodule SenTweetWeb.StatsLive do
   def mount(_params, _session, socket) do
     if connected?(socket) do
       Phoenix.PubSub.subscribe(SenTweet.PubSub, "hourly:stats")
-      Phoenix.PubSub.subscribe(SenTweet.PubSub, "daily:stats")
     end
 
     stream = %{user: "bitfeels", track: "bitcoin"}
@@ -27,21 +26,12 @@ defmodule SenTweetWeb.StatsLive do
     {current_hour, hourly_stats} = HourlyStats.get(stream)
     hourly_svg = create_svg(hourly_stats, filter)
 
-    {current_day, daily_stats} = DailyStats.get(stream)
-    daily_svg = create_svg(daily_stats, filter)
-
     assigns = [
       stream: stream,
       hourly: %{
         current_hour: current_hour,
         stats: hourly_stats,
         svg: hourly_svg,
-        filter: filter
-      },
-      daily: %{
-        current_day: current_day,
-        stats: daily_stats,
-        svg: daily_svg,
         filter: filter
       }
     ]
@@ -66,18 +56,6 @@ defmodule SenTweetWeb.StatsLive do
     {:noreply, assign(socket, hourly: hourly)}
   end
 
-  def handle_event("daily_" <> event, _params, socket) when event in @type_events do
-    daily = socket.assigns.daily |> add_event([:filter, :type], event) |> update_svg()
-
-    {:noreply, assign(socket, daily: daily)}
-  end
-
-  def handle_event("daily_" <> event, _params, socket) when event in @weight_events do
-    daily = socket.assigns.daily |> add_event([:filter, :weight], event) |> update_svg()
-
-    {:noreply, assign(socket, daily: daily)}
-  end
-
   ###
   # Broadcast Callbacks
   ###
@@ -91,16 +69,6 @@ defmodule SenTweetWeb.StatsLive do
       |> update_svg()
 
     {:noreply, assign(socket, hourly: hourly)}
-  end
-
-  def handle_info({"daily:stats", current_day, last_day_stats}, socket) do
-    daily =
-      socket.assigns.daily
-      |> add_event([:current_day], current_day)
-      |> add_event([:stats], last_day_stats)
-      |> update_svg()
-
-    {:noreply, assign(socket, daily: daily)}
   end
 
   ###
