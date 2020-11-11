@@ -3,16 +3,7 @@ defmodule SenTweetWeb.StatsLive do
 
   use SenTweetWeb, :live_view
 
-  alias SenTweet.Bitfeels.{HourlyStats, Plots, Stats}
-
-  @type_events ["text", "extended", "retweeted", "quoted"]
-  @weight_events ["tweets", "likes", "retweets"]
-  @event_type_tweet_type %{
-    "text" => :text,
-    "extended" => :extended_tweet,
-    "retweeted" => :retweeted_status,
-    "quoted" => :quoted_status
-  }
+  alias SenTweet.StreamStats
 
   @impl true
   def mount(_params, _session, socket) do
@@ -22,17 +13,15 @@ defmodule SenTweetWeb.StatsLive do
 
     stream = %{user: "bitfeels", track: "bitcoin"}
     filter = %{type: "text", weight: "tweets"}
-
-    {current_hour, hourly_stats} = HourlyStats.get(stream)
-    hourly_svg = create_svg(hourly_stats, filter)
+    stream_stats = StreamStats.get(:hourly, stream, filter)
 
     assigns = [
-      stream: stream,
+      stream: stream_stats.stream,
       hourly: %{
-        current_hour: current_hour,
-        stats: hourly_stats,
-        svg: hourly_svg,
-        filter: filter
+        current_hour: stream_stats.current,
+        stats: stream_stats.stats,
+        svg: stream_stats.svg,
+        filter: stream_stats.filter
       }
     ]
 
@@ -44,14 +33,8 @@ defmodule SenTweetWeb.StatsLive do
   ###
 
   @impl true
-  def handle_event("hourly_" <> event, _params, socket) when event in @type_events do
-    hourly = socket.assigns.hourly |> add_event([:filter, :type], event) |> update_svg()
-
-    {:noreply, assign(socket, hourly: hourly)}
-  end
-
-  def handle_event("hourly_" <> event, _params, socket) when event in @weight_events do
-    hourly = socket.assigns.hourly |> add_event([:filter, :weight], event) |> update_svg()
+  def handle_event("hourly_" <> event, _params, socket) do
+    hourly = StreamStats.update(socket.assigns, event)
 
     {:noreply, assign(socket, hourly: hourly)}
   end
@@ -62,53 +45,23 @@ defmodule SenTweetWeb.StatsLive do
 
   @impl true
   def handle_info({"hourly:stats", current_hour, last_hour_stats}, socket) do
-    hourly =
-      socket.assigns.hourly
-      |> add_event([:current_hour], current_hour)
-      |> add_event([:stats], last_hour_stats)
-      |> update_svg()
+    hourly = StreamStats.update(socket.assigns, current_hour, last_hour_stats)
 
     {:noreply, assign(socket, hourly: hourly)}
   end
 
   ###
-  # Helpers
+  # View Helpers
   ###
-
-  defp add_event(data, keys, event) do
-    put_in(data, keys, event)
-  end
-
-  defp update_svg(data) do
-    Map.put(data, :svg, create_svg(data.stats, data.filter))
-  end
-
-  defp create_svg(stats, filter) do
-    stats |> get_histogram(filter) |> Plots.create()
-  end
-
-  defp get_histogram([], filter) do
-    get_histogram(Stats.create(), filter)
-  end
-
-  defp get_histogram(stats, %{type: type, weight: weight}) do
-    tweet_type = @event_type_tweet_type[type]
-    weight_factor = String.to_existing_atom(weight)
-
-    stats[tweet_type][weight_factor][:histogram]
-  end
-
   defp get_weight(data, weight, key) do
-    tweet_type = @event_type_tweet_type[data.filter.type]
+    tweet_type = StreamStats.to_tweet_type(data.filter.type)
 
-    data.stats[tweet_type][weight][key] || 0
+    case data.stats[tweet_type][weight][key] do
+      nil -> 0
+      value when is_float(value) -> Float.round(value, 2)
+      value -> value
+    end
   end
-
-  defp round_up(value) when is_float(value) do
-    Float.round(value, 2)
-  end
-
-  defp round_up(_), do: 0
 
   def is_selected(name, type, weight) do
     case String.split(name, "_") do
