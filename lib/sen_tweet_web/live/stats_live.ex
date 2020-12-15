@@ -5,8 +5,6 @@ defmodule SenTweetWeb.StatsLive do
 
   alias SenTweet.Bitfeels.{DailyStats, HourlyStats, Plots, Stats}
 
-  @type_events ["text", "extended", "retweeted", "quoted"]
-  @weight_events ["tweets", "likes", "retweets"]
   @event_type_tweet_type %{
     "text" => :text,
     "extended" => :extended_tweet,
@@ -17,12 +15,19 @@ defmodule SenTweetWeb.StatsLive do
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(SenTweet.PubSub, "hourly:stats")
-      Phoenix.PubSub.subscribe(SenTweet.PubSub, "daily:stats")
+      Phoenix.PubSub.subscribe(SenTweet.PubSub, "stats:hourly")
+      Phoenix.PubSub.subscribe(SenTweet.PubSub, "stats:daily")
     end
 
-    stream = %{user: "bitfeels", track: "bitcoin"}
-    filter = %{type: "text", weight: "tweets"}
+    streams =
+      Bitfeels.all_streams()
+      |> Enum.into(%{}, fn stream -> {stream.track, mount_stats(stream)} end)
+
+    {:ok, assign(socket, streams: streams)}
+  end
+
+  defp mount_stats(stream) do
+    filter = %{"type" => "text", "weight" => "tweets"}
 
     {current_hour, hourly_stats} = HourlyStats.get(stream)
     hourly_svg = create_svg(hourly_stats, filter)
@@ -30,23 +35,20 @@ defmodule SenTweetWeb.StatsLive do
     {current_day, daily_stats} = DailyStats.get(stream)
     daily_svg = create_svg(daily_stats, filter)
 
-    assigns = [
-      stream: stream,
-      hourly: %{
-        current_hour: current_hour,
+    %{
+      "hourly" => %{
+        current: current_hour,
         stats: hourly_stats,
         svg: hourly_svg,
         filter: filter
       },
-      daily: %{
-        current_day: current_day,
+      "daily" => %{
+        current: current_day,
         stats: daily_stats,
         svg: daily_svg,
         filter: filter
       }
-    ]
-
-    {:ok, assign(socket, assigns)}
+    }
   end
 
   ###
@@ -54,28 +56,11 @@ defmodule SenTweetWeb.StatsLive do
   ###
 
   @impl true
-  def handle_event("hourly_" <> event, _params, socket) when event in @type_events do
-    hourly = socket.assigns.hourly |> add_event([:filter, :type], event) |> update_svg()
+  def handle_event(event, %{"stream" => stream, "interval" => interval, "filter" => kind}, socket) do
+    streams = socket.assigns.streams
+    data = streams[stream][interval] |> add_event([:filter, kind], event) |> update_svg()
 
-    {:noreply, assign(socket, hourly: hourly)}
-  end
-
-  def handle_event("hourly_" <> event, _params, socket) when event in @weight_events do
-    hourly = socket.assigns.hourly |> add_event([:filter, :weight], event) |> update_svg()
-
-    {:noreply, assign(socket, hourly: hourly)}
-  end
-
-  def handle_event("daily_" <> event, _params, socket) when event in @type_events do
-    daily = socket.assigns.daily |> add_event([:filter, :type], event) |> update_svg()
-
-    {:noreply, assign(socket, daily: daily)}
-  end
-
-  def handle_event("daily_" <> event, _params, socket) when event in @weight_events do
-    daily = socket.assigns.daily |> add_event([:filter, :weight], event) |> update_svg()
-
-    {:noreply, assign(socket, daily: daily)}
+    {:noreply, assign(socket, streams: put_in(streams, [stream, interval], data))}
   end
 
   ###
@@ -83,24 +68,16 @@ defmodule SenTweetWeb.StatsLive do
   ###
 
   @impl true
-  def handle_info({"hourly:stats", current_hour, last_hour_stats}, socket) do
-    hourly =
-      socket.assigns.hourly
-      |> add_event([:current_hour], current_hour)
-      |> add_event([:stats], last_hour_stats)
+  def handle_info({stream, interval, current, stats}, socket) do
+    streams = socket.assigns.streams
+
+    data =
+      streams[stream.track][interval]
+      |> add_event([:current], current)
+      |> add_event([:stats], stats)
       |> update_svg()
 
-    {:noreply, assign(socket, hourly: hourly)}
-  end
-
-  def handle_info({"daily:stats", current_day, last_day_stats}, socket) do
-    daily =
-      socket.assigns.daily
-      |> add_event([:current_day], current_day)
-      |> add_event([:stats], last_day_stats)
-      |> update_svg()
-
-    {:noreply, assign(socket, daily: daily)}
+    {:noreply, assign(socket, streams: put_in(streams, [stream.track, interval], data))}
   end
 
   ###
@@ -123,7 +100,7 @@ defmodule SenTweetWeb.StatsLive do
     get_histogram(Stats.create(), filter)
   end
 
-  defp get_histogram(stats, %{type: type, weight: weight}) do
+  defp get_histogram(stats, %{"type" => type, "weight" => weight}) do
     tweet_type = @event_type_tweet_type[type]
     weight_factor = String.to_existing_atom(weight)
 
@@ -131,7 +108,7 @@ defmodule SenTweetWeb.StatsLive do
   end
 
   defp get_weight(data, weight, key) do
-    tweet_type = @event_type_tweet_type[data.filter.type]
+    tweet_type = @event_type_tweet_type[data.filter["type"]]
 
     data.stats[tweet_type][weight][key] || 0
   end

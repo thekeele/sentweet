@@ -116,8 +116,8 @@ defmodule SenTweet.Bitfeels.HourlyStats do
   defp publish_stats(hourly_stats, metadata) do
     last_day_stats = Stats.aggregate(hourly_stats)
 
-    message = {"daily:stats", Date.utc_today(), last_day_stats}
-    Phoenix.PubSub.broadcast(SenTweet.PubSub, "daily:stats", message)
+    message = {metadata, "daily", Date.utc_today(), last_day_stats}
+    Phoenix.PubSub.broadcast(SenTweet.PubSub, "stats:daily", message)
 
     DailyStats.put(last_day_stats, metadata)
 
